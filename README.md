@@ -33,4 +33,4 @@ With the dev server already running:
 npm run test:e2e
 ```
 
-The script drives Chrome through every page and branch: each dash level when the answers are right, wrong, and mixed, the rhyme in and out of order, quiz scores 0, 5, 6, and 8, writing mistakes and a saved card, every word card, the scope checklist, reward thresholds, and the score report.
+The script drives Chrome through every page and branch: each dash level when the answers are right, wrong, and mixed, every choice and every gap, an empty gap, extra spaces, a mark written as a word, the rhyme in and out of order, quiz scores 0, 5, 6, and 8, writing mistakes and a saved card, every word card, the scope checklist, reward thresholds, and the score report.
