@@ -31,6 +31,13 @@ const doors = [
     text: "Dear、Happy birthday!、From，同介紹學校嘅人。",
     tint: "bg-violet-100",
   },
+  {
+    href: "/report",
+    emoji: "📊",
+    title: "成績總結",
+    text: "邊類題目最熟，邊類最易錯。玩完冒險先睇。",
+    tint: "bg-stone-100",
+  },
 ];
 
 export default function HomePage() {

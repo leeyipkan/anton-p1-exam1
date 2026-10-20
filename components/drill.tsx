@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import type { Question } from "@/lib/content";
 import { addPoints } from "@/lib/progress";
+import { logAttempt } from "@/lib/report";
 import { speak } from "@/lib/speech";
 import { Volume2 } from "lucide-react";
 
@@ -118,6 +119,7 @@ export function Drill({
                 onClick={() => {
                   setPicked(choice);
                   const ok = choice === question.answer;
+                  logAttempt({ id: question.id, skill: question.skill, prompt: question.prompt, ok });
                   if (ok) {
                     setScore((value) => value + 1);
                     addPoints(10);

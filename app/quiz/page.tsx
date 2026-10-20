@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { Drill } from "@/components/drill";
+import { ReportCard } from "@/components/report-card";
 import { Button } from "@/components/ui/button";
 import { questions } from "@/lib/content";
 import { addPoints, writeProgress, readProgress } from "@/lib/progress";
@@ -39,7 +40,10 @@ export default function QuizPage() {
           開始
         </Button>
         {last !== null && (
-          <p className="mt-4 text-lg font-bold text-stone-700">上次呢一輪：{last}/8</p>
+          <div className="mt-6 space-y-3 text-left">
+            <p className="text-lg font-bold text-stone-700">上次呢一輪：{last}/8</p>
+            <ReportCard />
+          </div>
         )}
       </section>
     );

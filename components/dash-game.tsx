@@ -1,11 +1,14 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import Link from "next/link";
 import { Volume2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { ReportCard } from "@/components/report-card";
 import { RewardShelf } from "@/components/reward-shelf";
 import { questions, rhyme, type Question, type Skill } from "@/lib/content";
 import { addPoints, readProgress, type Reward } from "@/lib/progress";
+import { logAttempt } from "@/lib/report";
 import { speak } from "@/lib/speech";
 
 type Mood = "idle" | "happy" | "silly";
@@ -219,6 +222,12 @@ export function DashGame() {
       <RhymeStage
         onBack={() => setLevel(null)}
         onDone={(ok) => {
+          logAttempt({
+            id: "rhyme-order",
+            skill: "rhyme",
+            prompt: "Put the rhyme lines in order.",
+            ok,
+          });
           grant(ok ? 30 : 5);
           finish(ok ? 5 : 1, 5);
         }}
@@ -250,6 +259,9 @@ export function DashGame() {
             ))}
           </ul>
         )}
+        <div className="mx-auto mt-5 max-w-3xl text-left">
+          <ReportCard focus={level.rhyme ? "rhyme" : level.skill} />
+        </div>
         <div className="mt-4 flex flex-wrap justify-center gap-2">
           <Button className="h-12 rounded-full px-6 text-base" onClick={() => openLevel(level)}>
             再玩呢關
@@ -257,6 +269,12 @@ export function DashGame() {
           <Button variant="outline" className="h-12 rounded-full px-6 text-base" onClick={() => setLevel(null)}>
             返地圖
           </Button>
+          <Link
+            href="/report"
+            className="inline-flex h-12 items-center rounded-full border border-stone-300 bg-white px-6 text-base font-extrabold"
+          >
+            睇完整總結
+          </Link>
         </div>
       </section>
     );
@@ -309,6 +327,7 @@ export function DashGame() {
               onClick={() => {
                 setPicked(choice);
                 const ok = choice === question.answer;
+                logAttempt({ id: question.id, skill: question.skill, prompt: question.prompt, ok });
                 if (ok) {
                   const nextStreak = streak + 1;
                   const bonus = nextStreak >= 3 ? 10 : nextStreak === 2 ? 5 : 0;
@@ -407,6 +426,13 @@ function Map({
           );
         })}
       </div>
+      <Link
+        href="/report"
+        className="block rounded-[1.6rem] bg-stone-900 px-5 py-4 text-white shadow-[5px_5px_0_#d6d3d1]"
+      >
+        <span className="text-2xl font-extrabold">玩完睇總結</span>
+        <span className="mt-1 block font-semibold text-stone-200">邊類最熟，邊類最易錯，錯得最多嘅題。</span>
+      </Link>
     </div>
   );
 }
