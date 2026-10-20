@@ -12,6 +12,18 @@ The practice questions reuse the same words and patterns. They are new items for
 
 The main path is Super Boy School Dash: six levels, reactions, and sounds. At the end of a level, and on the score report, the app shows which question types are familiar and which are easy to miss. Word cards, the exam scope, a short quiz, and writing practice stay available.
 
+## Website
+
+The practice site is [https://leeyipkan.github.io/sunny-class/](https://leeyipkan.github.io/sunny-class/).
+
+Scores stay in the browser on that device. Nothing is sent to a server.
+
+To rebuild the Pages copy:
+
+```bash
+npm run export:pages
+```
+
 ## Run it
 
 ```bash

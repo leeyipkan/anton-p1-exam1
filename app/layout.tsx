@@ -12,6 +12,7 @@ const nunito = Nunito({
 export const metadata: Metadata = {
   title: "Sunny Class Primary 1 English",
   description: "Words, patterns, and games for Primary 1 English Units 1, 2, and 4.",
+  icons: { icon: `${process.env.NEXT_PUBLIC_BASE_PATH ?? ""}/favicon.ico` },
 };
 
 export default function RootLayout({

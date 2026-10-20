@@ -5,6 +5,10 @@ import { Volume2 } from "lucide-react";
 import { units, type UnitId } from "@/lib/content";
 import { speak } from "@/lib/speech";
 
+function pictureSrc(path: string) {
+  return `${process.env.NEXT_PUBLIC_BASE_PATH ?? ""}${path}`;
+}
+
 export default function LearnPage() {
   const [unitId, setUnitId] = useState<UnitId>(1);
   const [open, setOpen] = useState<string | null>(null);
@@ -43,7 +47,7 @@ export default function LearnPage() {
               <div className="flex items-center justify-between gap-3">
                 {word.picture ? (
                   <img
-                    src={word.picture}
+                    src={pictureSrc(word.picture)}
                     alt={word.en}
                     className="h-36 min-w-0 max-w-full flex-1 rounded-2xl bg-amber-50 object-contain"
                   />
