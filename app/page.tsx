@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { LiveRewardShelf } from "@/components/reward-shelf";
 import { StarMeter } from "@/components/star-meter";
 
 const doors = [
@@ -53,6 +54,7 @@ export default function HomePage() {
         </span>
         <StarMeter />
       </Link>
+      <LiveRewardShelf />
 
       <section className="grid gap-3 sm:grid-cols-2">
         {doors.map((door) => (

@@ -4,7 +4,7 @@ import { useState } from "react";
 import { Drill } from "@/components/drill";
 import { Button } from "@/components/ui/button";
 import { questions } from "@/lib/content";
-import { writeProgress, readProgress } from "@/lib/progress";
+import { addPoints, writeProgress, readProgress } from "@/lib/progress";
 
 function sample() {
   const copy = [...questions];
@@ -26,7 +26,7 @@ export default function QuizPage() {
         <p className="text-sm font-extrabold text-rose-600">8 題 · Unit 1、2、4 混合</p>
         <h1 className="mt-1 text-4xl font-extrabold text-stone-900">模擬小測</h1>
         <p className="mt-3 max-w-xl text-lg leading-relaxed text-stone-600">
-          題目用考試嗰種選擇方式，但係新句子，唔係課本原題。做完先睇分數。聽唔到英文，就請家長讀出題目。
+          每題答啱加 10 分。八題全對再加 20 分，可以解鎖獎勵。聽唔到英文，就請家長讀出題目。
         </p>
         <Button
           className="mt-5 h-12 rounded-full px-6 text-base"
@@ -55,6 +55,7 @@ export default function QuizPage() {
           setLast(score);
           const best = Math.max(readProgress().bestQuiz, score);
           writeProgress({ bestQuiz: best });
+          if (score === 8) addPoints(20);
           setStarted(false);
         }}
       />

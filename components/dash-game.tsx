@@ -1,10 +1,11 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Volume2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { RewardShelf } from "@/components/reward-shelf";
 import { questions, rhyme, type Question, type Skill } from "@/lib/content";
-import { addStars } from "@/lib/progress";
+import { addPoints, readProgress, type Reward } from "@/lib/progress";
 import { speak } from "@/lib/speech";
 
 type Mood = "idle" | "happy" | "silly";
@@ -149,13 +150,19 @@ export function DashGame() {
   const [deck, setDeck] = useState<Question[]>([]);
   const [index, setIndex] = useState(0);
   const [picked, setPicked] = useState<string | null>(null);
-  const [score, setScore] = useState(0);
+  const [streak, setStreak] = useState(0);
+  const [roundPoints, setRoundPoints] = useState(0);
+  const [gained, setGained] = useState(0);
+  const [points, setPoints] = useState(0);
+  const [justUnlocked, setJustUnlocked] = useState<Reward[]>([]);
+  const correctRef = useRef(0);
   const [mood, setMood] = useState<Mood>("idle");
   const [burst, setBurst] = useState<string | null>(null);
   const [clearScore, setClearScore] = useState<number | null>(null);
 
   useEffect(() => {
     setBest(readBest());
+    setPoints(readProgress().points);
   }, []);
 
   useEffect(() => {
@@ -169,7 +176,11 @@ export function DashGame() {
     setMood("idle");
     setBurst(null);
     setPicked(null);
-    setScore(0);
+    setStreak(0);
+    setRoundPoints(0);
+    setGained(0);
+    setJustUnlocked([]);
+    correctRef.current = 0;
     setIndex(0);
     if (next.skill) {
       const pool = questions.filter((item) => item.skill === next.skill);
@@ -179,25 +190,38 @@ export function DashGame() {
     }
   }
 
+  function grant(amount: number) {
+    const result = addPoints(amount);
+    setPoints(result.after);
+    setRoundPoints((value) => value + amount);
+    setGained(amount);
+    if (result.unlocked.length) setJustUnlocked((current) => [...current, ...result.unlocked]);
+    return result;
+  }
+
   function finish(finalScore: number, total: number) {
     if (!level) return;
     const saved = writeBest(level.id, finalScore);
     setBest(saved);
+    if (!level.rhyme && finalScore === total) grant(30);
     setClearScore(finalScore);
-    setBurst(finalScore === total ? "You can fly now!" : "再玩一次，蛋糕會多啲。");
+    setBurst(finalScore === total ? "全對！You can fly now!" : "再玩一次，積分會再加。");
     setMood(finalScore > 0 ? "happy" : "silly");
     if (finalScore === total) playYes();
   }
 
   if (!level) {
-    return <Map best={best} onPlay={openLevel} />;
+    return <Map best={best} points={points} onPlay={openLevel} />;
   }
 
   if (level.rhyme && clearScore === null) {
     return (
       <RhymeStage
         onBack={() => setLevel(null)}
-        onDone={(ok) => finish(ok ? 5 : 1, 5)}
+        onDone={(ok) => {
+          grant(ok ? 30 : 5);
+          finish(ok ? 5 : 1, 5);
+        }}
       />
     );
   }
@@ -212,8 +236,20 @@ export function DashGame() {
         <p className="text-6xl">{level.emoji}</p>
         <h2 className="mt-2 text-4xl font-extrabold text-amber-950">{title}</h2>
         <p className="mt-2 text-2xl font-extrabold text-stone-700">
-          {clearScore} / {total} 塊蛋糕
+          {clearScore} / {total} 題答啱
         </p>
+        <p className="mt-1 text-3xl font-extrabold text-amber-800">今關 +{roundPoints} 分</p>
+        <p className="text-lg font-bold text-stone-600">總積分 {points}</p>
+        {justUnlocked.length > 0 && (
+          <ul className="mx-auto mt-4 grid max-w-md gap-2">
+            {justUnlocked.map((reward) => (
+              <li key={reward.id} className="rounded-3xl bg-white px-4 py-3 text-xl font-extrabold text-amber-950">
+                新獎勵 {reward.emoji} {reward.name}
+                <span className="mt-1 block text-base text-stone-600">{reward.line}</span>
+              </li>
+            ))}
+          </ul>
+        )}
         <div className="mt-4 flex flex-wrap justify-center gap-2">
           <Button className="h-12 rounded-full px-6 text-base" onClick={() => openLevel(level)}>
             再玩呢關
@@ -239,7 +275,8 @@ export function DashGame() {
           {level.emoji} {level.title}
         </p>
         <p className="rounded-full bg-amber-100 px-3 py-1 text-sm font-extrabold">
-          {index + 1}/{deck.length} · 🎂 {score}
+          {index + 1}/{deck.length} · 🪙 {points}
+          {streak > 1 ? ` · 連續 ${streak}` : ""}
         </p>
       </div>
       <Hero mood={mood} line={burst ?? "Help! 揀一個答案！"} />
@@ -273,13 +310,18 @@ export function DashGame() {
                 setPicked(choice);
                 const ok = choice === question.answer;
                 if (ok) {
-                  setScore((value) => value + 1);
+                  const nextStreak = streak + 1;
+                  const bonus = nextStreak >= 3 ? 10 : nextStreak === 2 ? 5 : 0;
+                  correctRef.current += 1;
+                  setStreak(nextStreak);
                   setMood("happy");
-                  setBurst(pick(cheers));
-                  addStars(1);
+                  setBurst(`${pick(cheers)} +${10 + bonus} 分`);
+                  grant(10 + bonus);
                   playYes();
                   speak("Yes! " + choice);
                 } else {
+                  setStreak(0);
+                  setGained(0);
                   setMood("silly");
                   setBurst(pick(oops));
                   playNo();
@@ -302,10 +344,11 @@ export function DashGame() {
       {picked && (
         <div className="mt-4 rounded-3xl bg-amber-100 p-4">
           <p className="text-lg font-bold text-stone-800">{question.explain}</p>
+          {gained > 0 && <p className="mt-1 text-2xl font-extrabold text-emerald-700">+{gained} 分</p>}
           <Button
             className="mt-3 h-12 rounded-full px-6 text-base"
             onClick={() => {
-              if (index + 1 >= deck.length) finish(score, deck.length);
+              if (index + 1 >= deck.length) finish(correctRef.current, deck.length);
               else {
                 setIndex((value) => value + 1);
                 setPicked(null);
@@ -322,7 +365,15 @@ export function DashGame() {
   );
 }
 
-function Map({ best, onPlay }: { best: Record<string, number>; onPlay: (level: Level) => void }) {
+function Map({
+  best,
+  points,
+  onPlay,
+}: {
+  best: Record<string, number>;
+  points: number;
+  onPlay: (level: Level) => void;
+}) {
   return (
     <div className="space-y-4">
       <section className="overflow-hidden rounded-[2rem] bg-gradient-to-br from-amber-300 via-rose-200 to-sky-200 p-6 text-center">
@@ -332,9 +383,10 @@ function Map({ best, onPlay }: { best: Record<string, number>; onPlay: (level: L
           <span className="block">返學大冒險</span>
         </h1>
         <p className="mx-auto mt-2 max-w-xl text-lg font-bold text-amber-950/80">
-          六關笑住玩。範圍係 Unit 1、Unit 2 同 Unit 4。
+          答啱 +10 分。連續答啱再加分。全對過關再 +30。積分夠就解鎖獎勵。
         </p>
       </section>
+      <RewardShelf points={points} />
       <div className="grid gap-3 sm:grid-cols-2">
         {levels.map((level) => {
           const stars = best[level.id] ?? 0;
@@ -434,7 +486,6 @@ function RhymeStage({ onBack, onDone }: { onBack: () => void; onDone: (ok: boole
             const ok = picked.every((line, index) => line === rhyme[index]);
             setChecked(true);
             if (ok) {
-              addStars(3);
               playYes();
               speak("Yes! You can fly now!");
             } else {

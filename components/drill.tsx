@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import type { Question } from "@/lib/content";
-import { addStars } from "@/lib/progress";
+import { addPoints } from "@/lib/progress";
 import { speak } from "@/lib/speech";
 import { Volume2 } from "lucide-react";
 
@@ -120,7 +120,7 @@ export function Drill({
                   const ok = choice === question.answer;
                   if (ok) {
                     setScore((value) => value + 1);
-                    addStars(1);
+                    addPoints(10);
                     speak("Yes! " + choice);
                   } else {
                     speak("The answer is " + question.answer);

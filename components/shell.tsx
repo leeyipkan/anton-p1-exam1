@@ -1,8 +1,10 @@
 "use client";
 
 import type { ReactNode } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { readProgress } from "@/lib/progress";
 import {
   BookOpen,
   House,
@@ -24,11 +26,19 @@ const links = [
 
 export function Shell({ children }: { children: ReactNode }) {
   const pathname = usePathname();
+  const [points, setPoints] = useState(0);
+
+  useEffect(() => {
+    const sync = () => setPoints(readProgress().points);
+    sync();
+    window.addEventListener("sunny-points", sync);
+    return () => window.removeEventListener("sunny-points", sync);
+  }, []);
 
   return (
     <div className="min-h-screen">
       <header className="no-print sticky top-0 z-20 border-b border-amber-200/80 bg-[#fff8ec]/90 backdrop-blur">
-        <div className="mx-auto flex max-w-5xl items-center justify-between gap-4 px-4 py-3">
+        <div className="mx-auto flex max-w-5xl items-center gap-3 px-4 py-3">
           <Link href="/" className="flex items-center gap-2 font-extrabold text-amber-800">
             <span className="grid size-10 place-items-center rounded-2xl bg-amber-300 text-xl">
               ☀️
@@ -40,7 +50,10 @@ export function Shell({ children }: { children: ReactNode }) {
               </span>
             </span>
           </Link>
-          <nav className="hidden items-center gap-1 md:flex">
+          <p className="rounded-full bg-amber-400 px-3 py-1 text-sm font-extrabold text-amber-950">
+            🪙 {points}
+          </p>
+          <nav className="ml-auto hidden items-center gap-1 md:flex">
             {links.map((link) => {
               const active = pathname === link.href;
               const Icon = link.icon;

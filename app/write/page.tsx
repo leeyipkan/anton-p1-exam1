@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { writeProgress } from "@/lib/progress";
+import { addPoints, readProgress, writeProgress } from "@/lib/progress";
 import { speak } from "@/lib/speech";
 
 const cardChoices = [
@@ -32,6 +32,7 @@ export default function WritePage() {
   const [friend, setFriend] = useState("");
   const [me, setMe] = useState("");
   const [saved, setSaved] = useState(false);
+  const [cardBonus, setCardBonus] = useState(false);
 
   const namePattern = /^[A-Z][a-zA-Z]*(?: [A-Z][a-zA-Z]*)?$/;
   const friendOk = namePattern.test(friend.trim());
@@ -131,13 +132,19 @@ export default function WritePage() {
                 variant="outline"
                 className="h-11 rounded-full"
                 onClick={() => {
+                  const already = readProgress().cardDone;
                   writeProgress({ cardDone: true });
+                  if (!already) {
+                    addPoints(20);
+                    setCardBonus(true);
+                  }
                   setSaved(true);
                 }}
               >
                 {saved ? "已保存" : "我寫好了"}
               </Button>
             </div>
+            {cardBonus && <p className="mt-3 font-extrabold text-amber-800">獎勵 +20 分</p>}
           </div>
         )}
       </section>
