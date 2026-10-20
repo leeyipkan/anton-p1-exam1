@@ -46,8 +46,9 @@ export default function HomePage() {
         <p className="text-sm font-extrabold tracking-wide text-amber-900/80">
           PRIMARY 1 ENGLISH
         </p>
-        <h1 className="mt-1 text-4xl font-extrabold text-amber-950 md:text-5xl">
-          Hello! 準備英文測驗
+        <h1 className="mt-1 text-[2rem] font-extrabold leading-tight text-amber-950 md:text-5xl">
+          Hello!
+          <span className="mt-1 block">準備英文測驗</span>
         </h1>
         <p className="mt-3 max-w-2xl text-lg leading-relaxed text-amber-950/80">
           根據你影低嘅課本，今次溫習範圍係 Unit 1 至 Unit 4：認識新同學、學校嘅人、聽老師指令，同書包裡嘅物件。

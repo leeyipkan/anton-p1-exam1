@@ -182,7 +182,7 @@ export const units: Unit[] = [
       { en: "book", zh: "書", emoji: "📗", say: "book" },
       { en: "pencil case", zh: "筆盒", emoji: "🖊️", say: "pencil case" },
       { en: "lunch box", zh: "飯盒", emoji: "🍱", say: "lunch box" },
-      { en: "water bottle", zh: "水樽", emoji: "🧴", say: "water bottle" },
+      { en: "water bottle", zh: "水樽", emoji: "🥤", say: "water bottle" },
       { en: "pen", zh: "原子筆", emoji: "✒️", say: "pen" },
       { en: "pencil", zh: "鉛筆", emoji: "✏️", say: "pencil" },
       { en: "eraser", zh: "擦膠", emoji: "🧽", say: "eraser" },
