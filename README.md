@@ -21,7 +21,7 @@ npm run dev
 
 Open [http://127.0.0.1:43123](http://127.0.0.1:43123).
 
-The speaker button uses the browser voice for English. If there is no sound, a parent can read the English on the screen.
+Each question has a line to say out loud, and the answer is a full English sentence to tell him. The speaker button uses the browser voice. If there is no sound, read the Say to him and Tell him lines on the screen.
 
 ## End-to-end check
 

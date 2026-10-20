@@ -1,7 +1,9 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { questions } from "@/lib/content";
 import { readAttempts, skillInfo, summarize, type AttemptSkill, type Summary } from "@/lib/report";
+import { englishAnswer, englishQuestion } from "@/lib/tell";
 
 export function ReportCard({ focus }: { focus?: AttemptSkill }) {
   const [summary, setSummary] = useState<Summary | null>(null);
@@ -108,7 +110,9 @@ export function ReportCard({ focus }: { focus?: AttemptSkill }) {
         <div className="rounded-[1.6rem] bg-white p-5 shadow-sm ring-1 ring-rose-100">
           <h3 className="text-xl font-extrabold text-stone-900">Missed most often</h3>
           <ul className="mt-3 space-y-3">
-            {summary.missed.map((item) => (
+            {summary.missed.map((item) => {
+              const question = questions.find((row) => row.id === item.id);
+              return (
               <li key={item.id} className="rounded-2xl bg-rose-50 px-4 py-3">
                 <p className="text-sm font-extrabold text-rose-700">
                   {skillInfo[item.skill].label} · missed {item.misses} {item.misses === 1 ? "time" : "times"}
@@ -116,9 +120,16 @@ export function ReportCard({ focus }: { focus?: AttemptSkill }) {
                 <p className="mt-1 text-lg font-extrabold text-stone-900" lang="en">
                   {item.prompt}
                 </p>
+                {question && (
+                  <p className="mt-1 text-base font-bold text-stone-800">
+                    Say to him: {englishQuestion(question)}
+                    <span className="mt-1 block">Tell him: {englishAnswer(question)}</span>
+                  </p>
+                )}
                 {item.explain && <p className="mt-1 text-base text-stone-600">{item.explain}</p>}
               </li>
-            ))}
+              );
+            })}
           </ul>
         </div>
       )}

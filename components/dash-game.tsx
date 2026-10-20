@@ -10,6 +10,7 @@ import { questions, rhyme, type Question, type Skill } from "@/lib/content";
 import { addPoints, readProgress, type Reward } from "@/lib/progress";
 import { logAttempt } from "@/lib/report";
 import { speak } from "@/lib/speech";
+import { choiceLabel, englishAnswer, englishQuestion } from "@/lib/tell";
 
 type Mood = "idle" | "happy" | "silly";
 
@@ -176,7 +177,7 @@ export function DashGame() {
 
   useEffect(() => {
     if (!level || level.rhyme || clearScore !== null || !deck[index] || picked) return;
-    speak(deck[index].speak ?? deck[index].prompt);
+    speak(englishQuestion(deck[index]));
   }, [level, deck, index, picked, clearScore]);
 
   function openLevel(next: Level) {
@@ -313,11 +314,14 @@ export function DashGame() {
             type="button"
             className="grid size-12 shrink-0 place-items-center rounded-full bg-sky-200 text-sky-800"
             aria-label="Read the question"
-            onClick={() => speak(question.speak ?? question.prompt)}
+            onClick={() => speak(englishQuestion(question))}
           >
             <Volume2 />
           </button>
         </div>
+        <p className="mt-2 text-lg font-bold text-amber-950" data-ask>
+          Say to him: {englishQuestion(question)}
+        </p>
         <p className="mt-1 text-stone-600">{question.hint}</p>
       </div>
       <div className="mt-3 grid gap-3">
@@ -343,14 +347,14 @@ export function DashGame() {
                   setBurst(`${pick(cheers)} +${10 + bonus}`);
                   grant(10 + bonus);
                   playYes();
-                  speak("Yes! " + choice);
+                  speak("Yes! " + englishAnswer(question));
                 } else {
                   setStreak(0);
                   setGained(0);
                   setMood("silly");
                   setBurst(pick(oops));
                   playNo();
-                  speak("The answer is " + question.answer);
+                  speak(englishAnswer(question));
                 }
               }}
               className={`min-h-16 rounded-full border-4 px-5 py-3 text-left text-xl font-extrabold ${
@@ -362,13 +366,27 @@ export function DashGame() {
               }`}
             >
               {choice}
+              {choiceLabel(choice) ? ` ${choiceLabel(choice)}` : ""}
             </button>
           );
         })}
       </div>
       {picked && (
         <div className="mt-4 rounded-3xl bg-amber-100 p-4">
-          <p className="text-lg font-bold text-stone-800">{question.explain}</p>
+          <div className="flex items-start justify-between gap-3">
+            <p className="text-xl font-extrabold text-amber-950" data-tell>
+              Tell him: {englishAnswer(question)}
+            </p>
+            <button
+              type="button"
+              className="grid size-12 shrink-0 place-items-center rounded-full bg-sky-200 text-sky-800"
+              aria-label="Say the answer"
+              onClick={() => speak(englishAnswer(question))}
+            >
+              <Volume2 />
+            </button>
+          </div>
+          <p className="mt-1 text-lg font-bold text-stone-800">{question.explain}</p>
           {gained > 0 && <p className="mt-1 text-2xl font-extrabold text-emerald-700">+{gained} points</p>}
           <Button
             className="mt-3 h-12 rounded-full px-6 text-base"

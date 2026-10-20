@@ -6,6 +6,7 @@ import type { Question } from "@/lib/content";
 import { addPoints } from "@/lib/progress";
 import { logAttempt } from "@/lib/report";
 import { speak } from "@/lib/speech";
+import { choiceLabel, englishAnswer, englishQuestion } from "@/lib/tell";
 import { Volume2 } from "lucide-react";
 
 function shuffle<T>(items: T[]) {
@@ -44,7 +45,7 @@ export function Drill({
 
   useEffect(() => {
     if (!deck || finished) return;
-    const line = deck[index]?.speak ?? deck[index]?.prompt;
+    const line = deck[index] ? englishQuestion(deck[index]) : "";
     if (line) speak(line);
   }, [deck, index, finished]);
 
@@ -102,12 +103,15 @@ export function Drill({
             type="button"
             className="grid size-12 shrink-0 place-items-center rounded-full bg-sky-100 text-sky-700"
             aria-label="Read the question"
-            onClick={() => speak(question.speak ?? question.prompt)}
+            onClick={() => speak(englishQuestion(question))}
           >
             <Volume2 />
           </button>
         </div>
-        <p className="mt-2 text-base text-stone-500">{question.hint}</p>
+        <p className="mt-2 text-lg font-bold text-amber-950" data-ask>
+          Say to him: {englishQuestion(question)}
+        </p>
+        <p className="mt-1 text-base text-stone-500">{question.hint}</p>
         <div className="mt-4 grid gap-3">
           {question.choices.map((choice) => {
             const chosen = picked === choice;
@@ -127,9 +131,9 @@ export function Drill({
                     scoreRef.current += 1;
                     setScore(scoreRef.current);
                     addPoints(10);
-                    speak("Yes! " + choice);
+                    speak("Yes! " + englishAnswer(question));
                   } else {
-                    speak("The answer is " + question.answer);
+                    speak(englishAnswer(question));
                   }
                 }}
                 className={`min-h-14 rounded-2xl border-2 px-4 py-3 text-left text-lg font-bold transition ${
@@ -141,6 +145,7 @@ export function Drill({
                 }`}
               >
                 {choice}
+                {choiceLabel(choice) ? ` ${choiceLabel(choice)}` : ""}
               </button>
             );
           })}
@@ -150,6 +155,19 @@ export function Drill({
             <p className="text-lg font-extrabold text-amber-900">
               {correct ? "Yes!" : "Look at the correct answer."}
             </p>
+            <div className="mt-1 flex items-start justify-between gap-3">
+              <p className="text-lg font-extrabold text-amber-950" data-tell>
+                Tell him: {englishAnswer(question)}
+              </p>
+              <button
+                type="button"
+                className="grid size-12 shrink-0 place-items-center rounded-full bg-sky-100 text-sky-700"
+                aria-label="Say the answer"
+                onClick={() => speak(englishAnswer(question))}
+              >
+                <Volume2 />
+              </button>
+            </div>
             <p className="mt-1 text-base text-stone-700">{question.explain}</p>
             <Button
               className="mt-3 h-11 rounded-full px-5"

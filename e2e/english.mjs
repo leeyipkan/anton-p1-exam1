@@ -147,7 +147,34 @@ function assertEnglish(text, where) {
   }
 }
 
+function loadSpoken() {
+  const src = fs.readFileSync(new URL("../lib/tell.ts", import.meta.url), "utf8");
+  const body = src.split("const spoken")[1].split("export function choiceLabel")[0];
+  const lines = new Map();
+  const found = [
+    ...body.matchAll(
+      /\n  ([a-z]\d+): \{\n    ask: "((?:\\.|[^"\\])*)",\n    tell: "((?:\\.|[^"\\])*)",\n  \}/g,
+    ),
+  ];
+  for (const match of found) {
+    const id = match[1];
+    const question = JSON.parse(`"${match[2]}"`);
+    const answer = JSON.parse(`"${match[3]}"`);
+    if (!question.endsWith("?")) throw new Error(`${id} question is not something you can ask: ${question}`);
+    if (!/[.!?]$/.test(answer)) throw new Error(`${id} answer is not a sentence: ${answer}`);
+    if (/\bblank\b/i.test(`${question} ${answer}`)) throw new Error(`${id} still says blank`);
+    lines.set(id, { ask: question, tell: answer });
+  }
+  if (lines.size === 0) throw new Error("no spoken lines parsed");
+  return lines;
+}
+
+const spoken = loadSpoken();
 const bank = assertContent();
+if (spoken.size !== bank.size) throw new Error(`spoken lines ${spoken.size}, questions ${bank.size}`);
+for (const question of bank.values()) {
+  if (!spoken.has(question.id)) throw new Error(`no spoken line for ${question.id}`);
+}
 const bySkill = new Map();
 for (const question of bank.values()) {
   const list = bySkill.get(question.skill) ?? [];
@@ -208,9 +235,16 @@ async function reset() {
   await page.reload({ waitUntil: "networkidle0" });
 }
 
+function matchesChoice(value, needle) {
+  return value === needle || value.startsWith(`${needle} `);
+}
+
 async function clickExact(text) {
   const result = await page.evaluate((needle) => {
-    const node = [...document.querySelectorAll("button, a")].find((item) => item.textContent.trim() === needle);
+    const nodes = [...document.querySelectorAll("button, a")];
+    const node =
+      nodes.find((item) => item.textContent.trim() === needle) ??
+      nodes.find((item) => item.textContent.trim().startsWith(`${needle} `));
     if (!node) return "missing";
     if (node.disabled) return "disabled";
     node.click();
@@ -290,17 +324,25 @@ async function answerDash(correct) {
   await waitText(question.hint);
   const choice = correct ? question.answer : question.choices.find((item) => item !== question.answer);
   const before = await pointsOf();
+  const ask = await page.$eval("[data-ask]", (el) => el.textContent.trim());
+  const script = spoken.get(question.id);
+  if (ask !== `Say to him: ${script.ask}`) throw new Error(`say line for ${prompt}: ${ask}`);
   await clickExact(choice);
   await waitText(question.explain);
   const marked = await page.evaluate(() => {
     const green = [...document.querySelectorAll("button")].find((item) => item.className.includes("border-emerald-500"));
     return green ? green.textContent.trim() : "";
   });
-  if (marked !== question.answer) throw new Error(`green answer for ${prompt} was ${marked}`);
+  if (!matchesChoice(marked, question.answer)) throw new Error(`green answer for ${prompt} was ${marked}`);
+  const told = await page.$eval("[data-tell]", (el) => el.textContent.trim());
+  if (told !== `Tell him: ${script.tell}`) throw new Error(`tell line for ${prompt}: ${told}`);
   const after = await pointsOf();
   if (!correct) {
     const guard = await page.evaluate((needle) => {
-      const node = [...document.querySelectorAll("button")].find((item) => item.textContent.trim() === needle);
+      const nodes = [...document.querySelectorAll("button")];
+      const node =
+        nodes.find((item) => item.textContent.trim() === needle) ??
+        nodes.find((item) => item.textContent.trim().startsWith(`${needle} `));
       if (!node?.disabled) return "not-disabled";
       node.click();
       return "blocked";
@@ -779,6 +821,9 @@ try {
         const prompt = await page.$eval("h3", (el) => el.textContent.trim());
         const question = bank.get(prompt);
         if (!question) throw new Error(`quiz prompt missing from the bank: ${prompt}`);
+        const ask = await page.$eval("[data-ask]", (el) => el.textContent.trim());
+        const script = spoken.get(question.id);
+        if (ask !== `Say to him: ${script.ask}`) throw new Error(`quiz say line for ${prompt}: ${ask}`);
         if (step === 0) await page.click("button[aria-label='Read the question']");
         const right = step < round.correct;
         if (right) {
@@ -790,6 +835,8 @@ try {
           await waitText("Look at the correct answer.");
           await waitText(question.explain);
         }
+        const told = await page.$eval("[data-tell]", (el) => el.textContent.trim());
+        if (told !== `Tell him: ${script.tell}`) throw new Error(`quiz tell line for ${prompt}: ${told}`);
         const before = await pointsOf();
         await page.evaluate((needle) => {
           const node = [...document.querySelectorAll("button")].find((item) => item.textContent.trim() === needle);
