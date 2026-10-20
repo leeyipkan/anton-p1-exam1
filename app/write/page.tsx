@@ -5,6 +5,8 @@ import { Button } from "@/components/ui/button";
 import { addPoints, readProgress, writeProgress } from "@/lib/progress";
 import { speak } from "@/lib/speech";
 
+const englishName = /^[A-Z][a-zA-Z]*(?: [A-Z][a-zA-Z]*)?$/;
+
 const cardChoices = [
   {
     text: "Dear Lily,\nHappy birthday!\nFrom Ken",
@@ -34,9 +36,8 @@ export default function WritePage() {
   const [saved, setSaved] = useState(false);
   const [cardBonus, setCardBonus] = useState(false);
 
-  const namePattern = /^[A-Z][a-zA-Z]*(?: [A-Z][a-zA-Z]*)?$/;
-  const friendOk = namePattern.test(friend.trim());
-  const meOk = namePattern.test(me.trim());
+  const friendOk = englishName.test(friend.trim());
+  const meOk = englishName.test(me.trim());
   const ready = friendOk && meOk;
 
   const card = ready
@@ -198,7 +199,7 @@ function PeopleBook() {
   const [friend, setFriend] = useState("Tom");
   const [who, setWho] = useState("He");
   const [role, setRole] = useState("classmate");
-  const nameOk = /^[A-Z]/.test(name.trim()) && /^[A-Z]/.test(friend.trim());
+  const nameOk = englishName.test(name.trim()) && englishName.test(friend.trim());
   const sentences = [
     `My name is ${name}.`,
     `I am ${age} years old.`,
@@ -252,6 +253,7 @@ function PeopleBook() {
       {!nameOk && (
         <p className="mt-3 font-bold text-rose-700">A name starts with a capital letter, like Amy or Tom.</p>
       )}
+      {nameOk && (
       <div className="mt-4 space-y-2 rounded-3xl bg-amber-50 p-4">
         {sentences.map((line) => (
           <p key={line} lang="en" className="text-xl font-extrabold text-stone-800">
@@ -262,6 +264,7 @@ function PeopleBook() {
           Read the four lines
         </Button>
       </div>
+      )}
     </section>
   );
 }

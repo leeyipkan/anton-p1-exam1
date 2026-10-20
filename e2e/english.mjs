@@ -178,7 +178,20 @@ const spoken = loadSpoken();
 const bank = assertContent();
 if (spoken.size !== bank.size) throw new Error(`spoken lines ${spoken.size}, questions ${bank.size}`);
 for (const question of bank.values()) {
-  if (!spoken.has(question.id)) throw new Error(`no spoken line for ${question.id}`);
+  const line = spoken.get(question.id);
+  if (!line) throw new Error(`no spoken line for ${question.id}`);
+  if (!question.prompt.includes("___")) continue;
+  if (/[A-Za-z]/.test(question.answer) && question.answer.length >= 2) {
+    const word = question.answer.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+    if (new RegExp(`\\b${word}\\b`, "i").test(line.ask)) throw new Error(`${question.id} says the answer before he writes it`);
+  }
+  const markNames = { "?": "question mark", ".": "full stop", "!": "exclamation mark", ",": "comma" };
+  if (markNames[question.answer] && line.ask.toLowerCase().includes(markNames[question.answer])) {
+    throw new Error(`${question.id} names the mark before he writes it`);
+  }
+  if ((question.answer === "a" || question.answer === "an") && /\ba or an\b/i.test(line.ask)) {
+    throw new Error(`${question.id} offers a or an before he writes it`);
+  }
 }
 const bySkill = new Map();
 for (const question of bank.values()) {
@@ -332,7 +345,7 @@ async function assertShape(question) {
   if (leaked.length) throw new Error(`${question.prompt} still shows choices: ${leaked.join(", ")}`);
 }
 
-async function fillGap(text) {
+async function setGap(text) {
   await page.$eval(
     "input[aria-label='Missing word']",
     (el, value) => {
@@ -342,6 +355,17 @@ async function fillGap(text) {
     },
     text,
   );
+}
+
+async function gapCheckDisabled() {
+  return page.evaluate(() => {
+    const button = [...document.querySelectorAll("button")].find((item) => item.textContent.trim() === "Check the gap");
+    return Boolean(button?.disabled);
+  });
+}
+
+async function fillGap(text) {
+  await setGap(text);
   await page.waitForFunction(() => {
     const button = [...document.querySelectorAll("button")].find((item) => item.textContent.trim() === "Check the gap");
     return button && !button.disabled;
@@ -678,7 +702,17 @@ try {
     if ((await pointsOf()) !== 20) throw new Error("points changed on the second visit");
     await setField(2, "amy");
     await waitText("A name starts with a capital letter, like Amy or Tom.");
+    if ((await readCopy()).includes("My name is amy.")) throw new Error("a lowercase name was shown as a sentence");
+    await setField(2, "Amy2");
+    if ((await readCopy()).includes("I finished it") || (await readCopy()).includes("My name is Amy2.")) {
+      throw new Error("a number in a person name was accepted");
+    }
     await setField(2, "Amy");
+    await setField(3, "tom");
+    await waitText("A name starts with a capital letter, like Amy or Tom.");
+    if ((await readCopy()).includes("This is tom.")) throw new Error("a lowercase friend was shown as a sentence");
+    await setField(3, "Tom2");
+    if ((await readCopy()).includes("This is Tom2.")) throw new Error("a number in a friend name was accepted");
     await setField(3, "Tom");
     await setSelect(0, "eight");
     await setSelect(1, "She");
@@ -687,6 +721,26 @@ try {
     await waitText("I am eight years old.");
     await waitText("This is Tom.");
     await waitText("She is my best friend.");
+    await setSelect(0, "five");
+    await setSelect(1, "He");
+    await setSelect(2, "group leader");
+    await waitText("I am five years old.");
+    await waitText("He is my group leader.");
+    if ((await readCopy()).includes("I am eight years old.") || (await readCopy()).includes("She is my best friend.")) {
+      throw new Error("the people book kept the previous sentences");
+    }
+    await setSelect(0, "seven");
+    await setSelect(2, "classmate");
+    await waitText("I am seven years old.");
+    await waitText("He is my classmate.");
+    await setField(0, " Lily");
+    await setField(1, "Ken");
+    await waitText("Dear Lily,");
+    await setField(0, "Amy2");
+    if ((await readCopy()).includes("I finished it")) throw new Error("Amy2 was accepted on the card");
+    await setField(0, "Lily  Wong");
+    if ((await readCopy()).includes("I finished it")) throw new Error("a double space in a name was accepted");
+    await setField(0, "Lily Wong");
     await clickExact("Read the four lines");
     await clickExact("you are great, super boy.");
     await waitText("Look at the green line. Put a comma before Super Boy.");
@@ -709,6 +763,8 @@ try {
     if ((await bestLine("Floor rhyme")) !== "Best not played") throw new Error("rhyme should be unplayed");
     await page.setViewport({ width: 390, height: 844 });
     await openLevel("Birthday classroom");
+    await waitText("Choose one answer");
+    if (await page.$("input[aria-label='Missing word']")) throw new Error("a choice question showed a gap");
     const extra = await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth);
     if (extra > 4) throw new Error(`question screen overflows by ${extra}px`);
     await clickExact("← Map");
@@ -897,6 +953,13 @@ try {
           }
           const filled = await page.$eval("[data-filled]", (el) => el.textContent.trim());
           if (filled !== question.answer) throw new Error(`quiz filled answer for ${prompt} was ${filled}`);
+          const expectedValue = right ? question.answer : typedBlank(question, false);
+          const locked = await page.$eval(
+            "input[aria-label='Missing word']",
+            (el, expected) => el.disabled && el.value === expected,
+            expectedValue,
+          );
+          if (!locked) throw new Error(`quiz gap stayed open for ${prompt}`);
         } else if (right) {
           await clickExact(question.answer);
           await waitText("Yes!");
@@ -965,6 +1028,80 @@ try {
     await waitText("Missed most often");
     const header = await pointsOf();
     await waitHeader(header);
+  });
+
+  await check("every gap branch", async () => {
+    await reset();
+    await goto("/play");
+    await page.setViewport({ width: 390, height: 844 });
+    await openLevel("Punctuation fight");
+    await waitText("Fill in the blank");
+    const narrow = await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth);
+    if (narrow > 4) throw new Error(`a gap screen overflows by ${narrow}px`);
+    await page.setViewport({ width: 1280, height: 900 });
+    if (!(await gapCheckDisabled())) throw new Error("an empty gap could be checked");
+    await setGap("   ");
+    if (!(await gapCheckDisabled())) throw new Error("spaces were enough to check a gap");
+    if ((await pointsOf()) !== 0) throw new Error("an empty gap scored points");
+    const first = bank.get(await promptOf());
+    await fillGap("question mark");
+    await waitText(first.explain);
+    const wrongValue = await page.$eval("input[aria-label='Missing word']", (el) => el.value);
+    if (wrongValue !== "question mark") throw new Error(`a wrong gap kept ${wrongValue}`);
+    const rose = await page.$eval(
+      "input[aria-label='Missing word']",
+      (el) => el.disabled && el.className.includes("border-rose-400"),
+    );
+    if (!rose) throw new Error("a wrong gap was not locked");
+    if ((await page.$eval("[data-filled]", (el) => el.textContent.trim())) !== first.answer) {
+      throw new Error("the missing mark was not shown");
+    }
+    if ((await pointsOf()) !== 0) throw new Error("writing the mark name scored points");
+    await clickExact("Next square");
+    if ((await page.$eval("input[aria-label='Missing word']", (el) => el.value)) !== "") {
+      throw new Error("the next gap kept the previous word");
+    }
+    const second = bank.get(await promptOf());
+    await setGap(`  ${second.answer}  `);
+    await page.focus("input[aria-label='Missing word']");
+    await page.keyboard.press("Enter");
+    await waitText("+10 points");
+    const shown = await page.$eval("input[aria-label='Missing word']", (el) => ({
+      value: el.value,
+      locked: el.disabled && el.className.includes("border-emerald-500"),
+    }));
+    if (shown.value !== second.answer || !shown.locked) throw new Error(`the gap showed ${shown.value}`);
+    if ((await pointsOf()) !== 10) throw new Error("a mark with extra spaces did not score 10");
+    await clickExact("← Map");
+    if ((await bestLine("Punctuation fight")) !== "Best not played") throw new Error("an unfinished gap level saved a best score");
+
+    let titled = false;
+    for (let attempt = 0; attempt < 8 && !titled; attempt += 1) {
+      await openLevel("Cake-hat teacher");
+      const total = await deckTotal();
+      for (let step = 0; step < total && !titled; step += 1) {
+        const question = bank.get(await promptOf());
+        if (question?.answer === "Mr Brown") {
+          await setGap("  mr   brown  ");
+          await clickExact("Check the gap");
+          await waitText("+10 points");
+          const value = await page.$eval("input[aria-label='Missing word']", (el) => el.value);
+          if (value !== "Mr Brown") throw new Error(`Mr Brown was stored as ${value}`);
+          titled = true;
+        } else if (step < total - 1) {
+          if (question.prompt.includes("___")) await fillGap("nope");
+          else await clickExact(question.choices.find((item) => item !== question.answer));
+          await clickExact("Next square");
+        }
+      }
+      await clickExact("← Map");
+    }
+    if (!titled) throw new Error("Mr Brown did not appear");
+    if ((await pointsOf()) !== 20) throw new Error(`gap points should be 20, were ${await pointsOf()}`);
+    await goto("/report");
+    await waitText(first.prompt);
+    await waitText(`Say to him: ${spoken.get(first.id).ask}`);
+    await waitText(`Tell him: ${spoken.get(first.id).tell}`);
   });
 
   await check("broken saved games do not crash a page", async () => {
