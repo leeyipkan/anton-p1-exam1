@@ -16,12 +16,12 @@ export type Reward = {
 };
 
 export const rewards: Reward[] = [
-  { id: "eraser", need: 30, emoji: "🧽", name: "逃跑擦膠", line: "擦膠決定留低陪你。" },
-  { id: "hat", need: 60, emoji: "🎩", name: "生日帽", line: "Super Boy 戴帽飛。" },
-  { id: "cape", need: 100, emoji: "🧣", name: "飛行斗篷", line: "斗篷可以飛過課室。" },
-  { id: "crown", need: 150, emoji: "👑", name: "蛋糕皇冠", line: "蛋糕自己戴皇冠。" },
-  { id: "bag", need: 220, emoji: "🎒", name: "金書包", line: "書包滿晒星星。" },
-  { id: "medal", need: 300, emoji: "🏅", name: "Super 金章", line: "You can fly now!" },
+  { id: "eraser", need: 30, emoji: "🧽", name: "Runaway eraser", line: "The eraser stays and helps you." },
+  { id: "hat", need: 60, emoji: "🎩", name: "Birthday hat", line: "Super Boy flies with the hat on." },
+  { id: "cape", need: 100, emoji: "🧣", name: "Flying cape", line: "The cape flies across the classroom." },
+  { id: "crown", need: 150, emoji: "👑", name: "Cake crown", line: "The cake wears its own crown." },
+  { id: "bag", need: 220, emoji: "🎒", name: "Golden bag", line: "The school bag is full of stars." },
+  { id: "medal", need: 300, emoji: "🏅", name: "Super medal", line: "You can fly now!" },
 ];
 
 const empty: Progress = { stars: 0, points: 0, bestQuiz: 0, cardDone: false };

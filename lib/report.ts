@@ -14,34 +14,34 @@ const KEY = "sunny-class-attempts";
 
 export const skillInfo: Record<AttemptSkill, { label: string; emoji: string; tip: string }> = {
   greetings: {
-    label: "打招呼、名同年紀",
+    label: "Greetings, names, and ages",
     emoji: "🎂",
-    tip: "再練 What is your name?、How old are you?、Good morning。",
+    tip: "Practise What is your name?, How old are you?, and Good morning.",
   },
   people: {
-    label: "學校嘅人",
+    label: "People at school",
     emoji: "🏫",
-    tip: "再練 He / She / We，同 Mr、Mrs、Miss。",
+    tip: "Practise He, She, We, and Mr, Mrs, Miss.",
   },
   bag: {
-    label: "書包同數字",
+    label: "School bag and numbers",
     emoji: "🎒",
-    tip: "再練 I have / He has，同 a / an。",
+    tip: "Practise I have / He has, and a / an.",
   },
   phonics: {
-    label: "拼音",
+    label: "Letter sounds",
     emoji: "🔤",
-    tip: "聽完先揀開頭字母：h m y、b g t、p k -en。",
+    tip: "Listen, then pick the starting sound: h m y, b g t, p k -en.",
   },
   marks: {
-    label: "標點",
+    label: "Punctuation",
     emoji: "💥",
-    tip: "問句用 ?，大叫用 !，普通句子用 .，名字前面用逗號。",
+    tip: "Questions use ?. Shouts use !. Ordinary sentences use . Put a comma before a name.",
   },
   rhyme: {
-    label: "童謠次序",
+    label: "Rhyme order",
     emoji: "🥁",
-    tip: "記住 one two glue，nine ten pen。",
+    tip: "Remember one two glue, and nine ten pen.",
   },
 };
 
@@ -149,6 +149,6 @@ export function summarize(attempts: Attempt[]): Summary {
 }
 
 function explainFor(id: string) {
-  if (id === "rhyme-order") return "順序係 glue、floor、ticks、straight、pen。";
+  if (id === "rhyme-order") return "The order ends with glue, floor, ticks, straight, pen.";
   return questions.find((item) => item.id === id)?.explain ?? "";
 }

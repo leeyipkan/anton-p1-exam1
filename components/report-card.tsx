@@ -18,8 +18,10 @@ export function ReportCard({ focus }: { focus?: AttemptSkill }) {
   if (summary.tries === 0) {
     return (
       <section className="rounded-[1.6rem] bg-white p-5 text-left shadow-sm ring-1 ring-amber-100">
-        <h2 className="text-2xl font-extrabold text-stone-900">成績總結</h2>
-        <p className="mt-2 text-lg text-stone-600">玩完一關，呢度會話你邊類題目最熟，邊類最易錯。</p>
+        <h2 className="text-2xl font-extrabold text-stone-900">Score report</h2>
+        <p className="mt-2 text-lg text-stone-600">
+          Finish a level. This page shows which question types feel familiar and which are easy to miss.
+        </p>
       </section>
     );
   }
@@ -29,53 +31,57 @@ export function ReportCard({ focus }: { focus?: AttemptSkill }) {
   return (
     <section className="space-y-4 text-left">
       <div className="rounded-[1.6rem] bg-white p-5 shadow-sm ring-1 ring-amber-100">
-        <h2 className="text-2xl font-extrabold text-stone-900">成績總結</h2>
+        <h2 className="text-2xl font-extrabold text-stone-900">Score report</h2>
         <p className="mt-1 text-lg font-bold text-stone-600">
-          一共做咗 {summary.tries} 題，啱 {summary.correct} 題。
+          {summary.tries} tries, {summary.correct} correct.
         </p>
         {focusStat && focusStat.tries > 0 && (
           <p className="mt-2 rounded-2xl bg-amber-50 px-3 py-2 font-bold text-amber-950">
-            呢關「{focusStat.label}」：{focusStat.tries} 題入面啱 {focusStat.correct} 題。
+            This level, {focusStat.label}: {focusStat.correct} correct out of {focusStat.tries}.
           </p>
         )}
       </div>
 
       <div className="grid gap-3 md:grid-cols-2">
         <article className="rounded-[1.6rem] bg-emerald-50 p-5">
-          <p className="text-sm font-extrabold text-emerald-800">最熟悉</p>
+          <p className="text-sm font-extrabold text-emerald-800">Most familiar</p>
           {summary.familiar ? (
             <>
               <h3 className="mt-1 text-2xl font-extrabold text-emerald-950">
                 {summary.familiar.emoji} {summary.familiar.label}
               </h3>
               <p className="mt-1 text-lg font-bold text-emerald-900">
-                {summary.familiar.tries} 題入面啱 {summary.familiar.correct} 題
+                {summary.familiar.correct} correct out of {summary.familiar.tries}
               </p>
             </>
           ) : (
-            <p className="mt-2 text-lg font-bold text-emerald-900">未有一類明顯最熟，先多玩幾關。</p>
+            <p className="mt-2 text-lg font-bold text-emerald-900">
+              No clear strength yet. Play a few more levels.
+            </p>
           )}
         </article>
         <article className="rounded-[1.6rem] bg-rose-50 p-5">
-          <p className="text-sm font-extrabold text-rose-800">最容易錯</p>
+          <p className="text-sm font-extrabold text-rose-800">Needs more practice</p>
           {summary.shaky ? (
             <>
               <h3 className="mt-1 text-2xl font-extrabold text-rose-950">
                 {summary.shaky.emoji} {summary.shaky.label}
               </h3>
               <p className="mt-1 text-lg font-bold text-rose-900">
-                {summary.shaky.tries} 題入面錯 {summary.shaky.tries - summary.shaky.correct} 題
+                {summary.shaky.tries - summary.shaky.correct} misses out of {summary.shaky.tries}
               </p>
               <p className="mt-2 text-base font-semibold text-rose-950">{summary.shaky.tip}</p>
             </>
           ) : (
-            <p className="mt-2 text-lg font-bold text-rose-900">暫時未有易錯題。已經玩過嘅都好熟。</p>
+            <p className="mt-2 text-lg font-bold text-rose-900">
+              No shaky type yet. The levels you played look solid.
+            </p>
           )}
         </article>
       </div>
 
       <div className="rounded-[1.6rem] bg-white p-5 shadow-sm ring-1 ring-amber-100">
-        <h3 className="text-xl font-extrabold text-stone-900">每一類</h3>
+        <h3 className="text-xl font-extrabold text-stone-900">Every type</h3>
         <ul className="mt-3 space-y-3">
           {summary.skills.map((item) => (
             <li key={item.skill}>
@@ -84,7 +90,7 @@ export function ReportCard({ focus }: { focus?: AttemptSkill }) {
                   {item.emoji} {item.label}
                 </span>
                 <span className="text-stone-500">
-                  {item.tries === 0 ? "未玩" : `${item.correct}/${item.tries}`}
+                  {item.tries === 0 ? "not played" : `${item.correct}/${item.tries}`}
                 </span>
               </div>
               <div className="mt-1 h-2 overflow-hidden rounded-full bg-stone-100">
@@ -100,12 +106,12 @@ export function ReportCard({ focus }: { focus?: AttemptSkill }) {
 
       {summary.missed.length > 0 && (
         <div className="rounded-[1.6rem] bg-white p-5 shadow-sm ring-1 ring-rose-100">
-          <h3 className="text-xl font-extrabold text-stone-900">錯得最多嘅題</h3>
+          <h3 className="text-xl font-extrabold text-stone-900">Missed most often</h3>
           <ul className="mt-3 space-y-3">
             {summary.missed.map((item) => (
               <li key={item.id} className="rounded-2xl bg-rose-50 px-4 py-3">
                 <p className="text-sm font-extrabold text-rose-700">
-                  {skillInfo[item.skill].label} · 錯 {item.misses} 次
+                  {skillInfo[item.skill].label} · missed {item.misses} {item.misses === 1 ? "time" : "times"}
                 </p>
                 <p className="mt-1 text-lg font-extrabold text-stone-900" lang="en">
                   {item.prompt}

@@ -24,10 +24,10 @@ export default function QuizPage() {
   if (!started) {
     return (
       <section className="rounded-[2rem] bg-white p-6 shadow-sm ring-1 ring-rose-100">
-        <p className="text-sm font-extrabold text-rose-600">8 題 · Unit 1、2、4 混合</p>
-        <h1 className="mt-1 text-4xl font-extrabold text-stone-900">模擬小測</h1>
+        <p className="text-sm font-extrabold text-rose-600">8 questions · Units 1, 2, and 4 mixed</p>
+        <h1 className="mt-1 text-4xl font-extrabold text-stone-900">Practice quiz</h1>
         <p className="mt-3 max-w-xl text-lg leading-relaxed text-stone-600">
-          每題答啱加 10 分。八題全對再加 20 分，可以解鎖獎勵。聽唔到英文，就請家長讀出題目。
+          Each correct answer adds 10 points. A perfect 8 adds 20 more and can unlock a reward. If the speaker is quiet, a parent can read the question aloud.
         </p>
         <Button
           className="mt-5 h-12 rounded-full px-6 text-base"
@@ -37,11 +37,11 @@ export default function QuizPage() {
             setStarted(true);
           }}
         >
-          開始
+          Start
         </Button>
         {last !== null && (
           <div className="mt-6 space-y-3 text-left">
-            <p className="text-lg font-bold text-stone-700">上次呢一輪：{last}/8</p>
+            <p className="text-lg font-bold text-stone-700">This round: {last}/8</p>
             <ReportCard />
           </div>
         )}
@@ -53,7 +53,7 @@ export default function QuizPage() {
     <div className="space-y-4">
       <Drill
         key={deck.map((item) => item.id).join("-")}
-        title="模擬小測"
+        title="Practice quiz"
         questions={deck}
         onDone={(score) => {
           setLast(score);

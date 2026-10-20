@@ -16,12 +16,12 @@ import {
 import { cn } from "cn";
 
 const links = [
-  { href: "/", label: "主頁", icon: House },
-  { href: "/scope", label: "範圍", icon: BookOpen },
-  { href: "/learn", label: "生字", icon: Sparkles },
-  { href: "/play", label: "冒險", icon: Rocket },
-  { href: "/quiz", label: "小測", icon: CircleCheck },
-  { href: "/write", label: "寫作", icon: Pencil },
+  { href: "/", label: "Home", icon: House },
+  { href: "/scope", label: "Scope", icon: BookOpen },
+  { href: "/learn", label: "Words", icon: Sparkles },
+  { href: "/play", label: "Dash", icon: Rocket },
+  { href: "/quiz", label: "Quiz", icon: CircleCheck },
+  { href: "/write", label: "Write", icon: Pencil },
 ];
 
 export function Shell({ children }: { children: ReactNode }) {
@@ -46,7 +46,7 @@ export function Shell({ children }: { children: ReactNode }) {
             <span className="leading-tight">
               Sunny Class
               <span className="block text-xs font-semibold text-amber-700/80">
-                小一英文溫習
+                Primary 1 English
               </span>
             </span>
           </Link>

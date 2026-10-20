@@ -6,36 +6,36 @@ const doors = [
   {
     href: "/learn",
     emoji: "🔤",
-    title: "生字卡",
-    text: "聽完跟住讀。拼音 h m y、b g t、p k -en。",
+    title: "Word cards",
+    text: "Listen and say the word. Sounds: h m y, b g t, p k -en.",
     tint: "bg-sky-100",
   },
   {
     href: "/scope",
     emoji: "📋",
-    title: "家長範圍",
-    text: "Unit 1、2、4 考咩。小朋友可以跳過呢頁。",
+    title: "Exam scope",
+    text: "What Units 1, 2, and 4 cover. Parents can read this page.",
     tint: "bg-amber-100",
   },
   {
     href: "/quiz",
     emoji: "✅",
-    title: "模擬小測",
-    text: "八題選擇，似考試卷。玩完冒險先做。",
+    title: "Practice quiz",
+    text: "Eight mixed questions, like a short paper. Play the dash first.",
     tint: "bg-rose-100",
   },
   {
     href: "/write",
     emoji: "🎂",
-    title: "寫生日卡",
-    text: "Dear、Happy birthday!、From，同介紹學校嘅人。",
+    title: "Birthday card",
+    text: "Dear, Happy birthday!, From, and a sentence about school.",
     tint: "bg-violet-100",
   },
   {
     href: "/report",
     emoji: "📊",
-    title: "成績總結",
-    text: "邊類題目最熟，邊類最易錯。玩完冒險先睇。",
+    title: "Score report",
+    text: "Which question types are familiar, and which are easy to miss.",
     tint: "bg-stone-100",
   },
 ];
@@ -50,14 +50,14 @@ export default function HomePage() {
         <p className="game-float text-7xl">🦸‍♂️🎂</p>
         <p className="mt-2 text-sm font-extrabold tracking-wide text-amber-900/80">SUPER BOY SCHOOL DASH</p>
         <h1 className="mt-1 text-[2rem] font-extrabold leading-tight text-amber-950 md:text-5xl">
-          返學大冒險
-          <span className="mt-1 block text-2xl md:text-3xl">蛋糕、擦膠、傻老師</span>
+          Super Boy
+          <span className="mt-1 block text-2xl md:text-3xl">School Dash</span>
         </h1>
         <p className="mt-3 max-w-2xl text-lg font-bold leading-relaxed text-amber-950/80">
-          撳關卡玩。答啱有蛋糕同音效，答錯擦膠會走去玩。英文仍然係 Unit 1、2、4。
+          Tap a level and play. A correct answer pops a cake and a sound. A wrong answer sends the eraser off to play. English from Units 1, 2, and 4.
         </p>
         <span className="mt-4 inline-flex h-12 items-center rounded-full bg-stone-900 px-6 text-lg font-extrabold text-white">
-          開始玩
+          Start playing
         </span>
         <StarMeter />
       </Link>
@@ -80,12 +80,12 @@ export default function HomePage() {
       </section>
 
       <section className="rounded-3xl bg-white p-5 shadow-sm ring-1 ring-amber-100">
-        <h2 className="text-xl font-extrabold text-amber-900">每日十分鐘</h2>
+        <h2 className="text-xl font-extrabold text-amber-900">Ten minutes a day</h2>
         <ol className="mt-3 grid gap-2 text-base text-stone-700 md:grid-cols-2">
-          <li className="rounded-2xl bg-amber-50 px-4 py-3">1. 生字頁聽五個字，小朋友跟住讀。</li>
-          <li className="rounded-2xl bg-sky-50 px-4 py-3">2. 揀一個句型，家長問、小朋友答。</li>
-          <li className="rounded-2xl bg-emerald-50 px-4 py-3">3. 玩一關 Super Boy，錯題睇綠色答案再讀一次。</li>
-          <li className="rounded-2xl bg-violet-50 px-4 py-3">4. 寫一行：My name is ... I am six years old.</li>
+          <li className="rounded-2xl bg-amber-50 px-4 py-3">1. Listen to five words and say them back.</li>
+          <li className="rounded-2xl bg-sky-50 px-4 py-3">2. Pick one pattern. A parent asks. The child answers.</li>
+          <li className="rounded-2xl bg-emerald-50 px-4 py-3">3. Play one Super Boy level. Read the green answer again.</li>
+          <li className="rounded-2xl bg-violet-50 px-4 py-3">4. Write one line: My name is ... I am six years old.</li>
         </ol>
       </section>
     </div>

@@ -10,8 +10,8 @@ const nunito = Nunito({
 });
 
 export const metadata: Metadata = {
-  title: "Sunny Class 小一英文溫習",
-  description: "根據小一英文 Unit 1、2、4 範圍整理嘅生字、句型同練習。",
+  title: "Sunny Class Primary 1 English",
+  description: "Words, patterns, and games for Primary 1 English Units 1, 2, and 4.",
 };
 
 export default function RootLayout({
@@ -20,7 +20,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="zh-HK" className={`${nunito.variable} h-full`}>
+    <html lang="en" className={`${nunito.variable} h-full`}>
       <body className="min-h-full antialiased">
         <Shell>{children}</Shell>
       </body>

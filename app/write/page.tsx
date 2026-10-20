@@ -46,13 +46,13 @@ export default function WritePage() {
   return (
     <div className="space-y-6">
       <header>
-        <p className="text-sm font-extrabold text-violet-700">寫作</p>
-        <h1 className="text-4xl font-extrabold text-stone-900">生日卡、人物、標點</h1>
+        <p className="text-sm font-extrabold text-violet-700">Writing</p>
+        <h1 className="text-4xl font-extrabold text-stone-900">Birthday card, people, and marks</h1>
       </header>
 
       <section className="rounded-3xl bg-white p-5 shadow-sm ring-1 ring-violet-100">
-        <h2 className="text-2xl font-extrabold">Unit 1 · 邊張生日卡啱？</h2>
-        <p className="mt-1 text-stone-600">Dear 係收卡嘅人，From 係寫卡嘅人，名要大階。</p>
+        <h2 className="text-2xl font-extrabold">Unit 1 · Which birthday card is right?</h2>
+        <p className="mt-1 text-stone-600">Dear is who gets the card. From is who writes it. Names start with a capital letter.</p>
         <div className="mt-4 grid gap-3 md:grid-cols-3">
           {cardChoices.map((choice, index) => {
             const picked = cardPick === index;
@@ -79,17 +79,19 @@ export default function WritePage() {
         </div>
         {cardPick !== null && (
           <p className="mt-3 font-bold text-emerald-800">
-            {cardChoices[cardPick].ok ? "呢張卡三部分齊，名都有大階。" : "睇綠色嗰張。dear 同人名都要大階。"}
+            {cardChoices[cardPick].ok
+              ? "This card has all three parts, and the names start with capitals."
+              : "Look at the green card. Dear and the names need capital letters."}
           </p>
         )}
       </section>
 
       <section className="rounded-3xl bg-amber-50 p-5">
-        <h2 className="text-2xl font-extrabold text-amber-950">自己寫一張</h2>
-        <p className="mt-1 text-amber-900/80">英文名，第一個字母大階，例如 Lily、Ken。</p>
+        <h2 className="text-2xl font-extrabold text-amber-950">Write your own card</h2>
+        <p className="mt-1 text-amber-900/80">Use an English name. The first letter is a capital, like Lily or Ken.</p>
         <div className="mt-4 grid gap-3 md:grid-cols-2">
           <label className="block font-bold text-amber-950">
-            收卡嘅人
+            Who gets the card
             <input
               value={friend}
               onChange={(event) => {
@@ -101,7 +103,7 @@ export default function WritePage() {
             />
           </label>
           <label className="block font-bold text-amber-950">
-            你個名
+            Your name
             <input
               value={me}
               onChange={(event) => {
@@ -114,9 +116,9 @@ export default function WritePage() {
           </label>
         </div>
         <ul className="mt-3 space-y-1 text-sm font-bold">
-          <li className={friendOk ? "text-emerald-700" : "text-stone-500"}>收卡人名以大階開始</li>
-          <li className={meOk ? "text-emerald-700" : "text-stone-500"}>你個名以大階開始</li>
-          <li className="text-emerald-700">有 Dear、Happy birthday!、From</li>
+          <li className={friendOk ? "text-emerald-700" : "text-stone-500"}>The friend&apos;s name starts with a capital</li>
+          <li className={meOk ? "text-emerald-700" : "text-stone-500"}>Your name starts with a capital</li>
+          <li className="text-emerald-700">It has Dear, Happy birthday!, and From</li>
         </ul>
         {ready && (
           <div className="mt-4 rounded-[2rem] bg-white p-6 text-center shadow-inner">
@@ -126,7 +128,7 @@ export default function WritePage() {
             </pre>
             <div className="mt-4 flex flex-wrap justify-center gap-2">
               <Button className="h-11 rounded-full" onClick={() => speak(card.split("\n").join(" "))}>
-                讀出生日卡
+                Read the card
               </Button>
               <Button
                 variant="outline"
@@ -141,10 +143,10 @@ export default function WritePage() {
                   setSaved(true);
                 }}
               >
-                {saved ? "已保存" : "我寫好了"}
+                {saved ? "Saved" : "I finished it"}
               </Button>
             </div>
-            {cardBonus && <p className="mt-3 font-extrabold text-amber-800">獎勵 +20 分</p>}
+            {cardBonus && <p className="mt-3 font-extrabold text-amber-800">Reward +20 points</p>}
           </div>
         )}
       </section>
@@ -152,8 +154,8 @@ export default function WritePage() {
       <PeopleBook />
 
       <section className="rounded-3xl bg-white p-5 shadow-sm ring-1 ring-sky-100">
-        <h2 className="text-2xl font-extrabold">Unit 4 · 漫畫點講</h2>
-        <p className="mt-1 text-stone-600">對住 Super Boy 講，名字前面有逗號，大叫可以加感嘆號。</p>
+        <h2 className="text-2xl font-extrabold">Unit 4 · What does the comic say?</h2>
+        <p className="mt-1 text-stone-600">You are talking to Super Boy. Put a comma before the name. A shout can use an exclamation mark.</p>
         <div className="mt-4 grid gap-3">
           {bubbleChoices.map((choice, index) => {
             const picked = bubblePick === index;
@@ -199,12 +201,12 @@ function PeopleBook() {
 
   return (
     <section className="rounded-3xl bg-white p-5 shadow-sm ring-1 ring-amber-100">
-      <h2 className="text-2xl font-extrabold">Unit 2 · 介紹學校嘅人</h2>
-      <p className="mt-1 text-stone-600">句頭大階，人名大階，句尾句號。呢四句可以讀出聲。</p>
+      <h2 className="text-2xl font-extrabold">Unit 2 · Introduce people at school</h2>
+      <p className="mt-1 text-stone-600">A sentence starts with a capital. A name starts with a capital. A sentence ends with a full stop. These four lines can be read aloud.</p>
       <div className="mt-4 grid gap-3 md:grid-cols-2">
-        <Field label="我個名" value={name} onChange={setName} />
+        <Field label="My name" value={name} onChange={setName} />
         <label className="block font-bold">
-          年紀
+          Age
           <select
             value={age}
             onChange={(event) => setAge(event.target.value)}
@@ -215,33 +217,33 @@ function PeopleBook() {
             ))}
           </select>
         </label>
-        <Field label="朋友個名" value={friend} onChange={setFriend} />
+        <Field label="Friend's name" value={friend} onChange={setFriend} />
         <label className="block font-bold">
-          男仔定女仔
+          Boy or girl
           <select
             value={who}
             onChange={(event) => setWho(event.target.value)}
             className="mt-1 h-12 w-full rounded-2xl border border-amber-200 px-3"
           >
-            <option value="He">He 男仔</option>
-            <option value="She">She 女仔</option>
+            <option value="He">He, a boy</option>
+            <option value="She">She, a girl</option>
           </select>
         </label>
         <label className="block font-bold md:col-span-2">
-          佢係
+          This person is
           <select
             value={role}
             onChange={(event) => setRole(event.target.value)}
             className="mt-1 h-12 w-full rounded-2xl border border-amber-200 px-3"
           >
-            <option value="classmate">classmate 同學</option>
-            <option value="group leader">group leader 組長</option>
-            <option value="best friend">best friend 最好嘅朋友</option>
+            <option value="classmate">classmate</option>
+            <option value="group leader">group leader</option>
+            <option value="best friend">best friend</option>
           </select>
         </label>
       </div>
       {!nameOk && (
-        <p className="mt-3 font-bold text-rose-700">人名第一個字母要大階，例如 Amy、Tom。</p>
+        <p className="mt-3 font-bold text-rose-700">A name starts with a capital letter, like Amy or Tom.</p>
       )}
       <div className="mt-4 space-y-2 rounded-3xl bg-amber-50 p-4">
         {sentences.map((line) => (
@@ -250,7 +252,7 @@ function PeopleBook() {
           </p>
         ))}
         <Button className="mt-2 h-11 rounded-full" onClick={() => speak(sentences.join(" "))}>
-          讀出四句
+          Read the four lines
         </Button>
       </div>
     </section>

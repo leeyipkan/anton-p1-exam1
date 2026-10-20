@@ -1,24 +1,34 @@
-# Sunny Class 小一英文溫習
+# Sunny Class Primary 1 English
 
-根據小一英文課本相片整理嘅溫習練習，範圍係 Unit 1、Unit 2 同 Unit 4。Chapter 3 唔計入今次考試。
+A revision game for Primary 1 English, built from the photographed textbook scope. The exam covers Unit 1, Unit 2, and Unit 4. Chapter 3 is out of this exam.
 
-- Unit 1 Getting to know you：打招呼、問名、問年紀、生日卡、拼音 h / m / y
-- Unit 2 People at my school：同學同老師、He / She / We、Mr / Mrs / Miss、大階同句號、拼音 b / g / t
-- Unit 4 In my school bag：書包物件、have / has、a / an、數字 1–10、標點、童謠次序、拼音 p / k / -en
+- Unit 1 Getting to know you: greetings, names, ages, birthday cards, sounds h / m / y
+- Unit 2 People at my school: classmates and teachers, He / She / We, Mr / Mrs / Miss, capitals and full stops, sounds b / g / t
+- Unit 4 In my school bag: bag items, have / has, a / an, numbers 1–10, punctuation, rhyme order, sounds p / k / -en
 
-第 42 頁預告咗 Unit 5 同 Unit 6，未當係今次範圍。
+Page 42 previews Unit 5 and Unit 6. Those units are not in this exam.
 
-練習題用同一批生字同句型重新寫，方便小朋友練，並非課本原題。
+The practice questions reuse the same words and patterns. They are new items for a child to practise, not the textbook pages copied out.
 
-小朋友主線係「Super Boy 返學大冒險」：六個關卡、角色反應同音效。每關完結同「成績總結」會話你邊類題目最熟、邊類最易錯。家長範圍、生字卡、小測同寫作仍然留低。
+The main path is Super Boy School Dash: six levels, reactions, and sounds. At the end of a level, and on the score report, the app shows which question types are familiar and which are easy to miss. Word cards, the exam scope, a short quiz, and writing practice stay available.
 
-## 點樣行
+## Run it
 
 ```bash
 npm install
 npm run dev
 ```
 
-瀏覽器打開 [http://127.0.0.1:43123](http://127.0.0.1:43123)。
+Open [http://127.0.0.1:43123](http://127.0.0.1:43123).
 
-撳喇叭會用瀏覽器朗讀英文。如果冇聲，請家長讀出畫面嘅英文。
+The speaker button uses the browser voice for English. If there is no sound, a parent can read the English on the screen.
+
+## End-to-end check
+
+With the dev server already running:
+
+```bash
+npm run test:e2e
+```
+
+The script drives Chrome through Home, Dash, Words, Write, Quiz, Scope, and the score report, and checks that the pages stay in English.

@@ -27,11 +27,13 @@ export function RewardShelf({ points }: { points: number }) {
     <section className="rounded-[1.6rem] bg-white p-4 shadow-sm ring-1 ring-amber-100">
       <div className="flex flex-wrap items-end justify-between gap-2">
         <div>
-          <p className="text-sm font-extrabold text-amber-700">積分</p>
+          <p className="text-sm font-extrabold text-amber-700">Points</p>
           <p className="text-4xl font-extrabold text-amber-950">{points}</p>
         </div>
         <p className="text-sm font-bold text-stone-600">
-          {upcoming ? `再 ${upcoming.need - points} 分攞 ${upcoming.emoji} ${upcoming.name}` : "獎勵全部攞晒！"}
+          {upcoming
+            ? `${upcoming.need - points} more for ${upcoming.emoji} ${upcoming.name}`
+            : "Every reward is unlocked!"}
         </p>
       </div>
       <div className="mt-3 h-3 overflow-hidden rounded-full bg-amber-100">
@@ -48,7 +50,7 @@ export function RewardShelf({ points }: { points: number }) {
               <span className="text-3xl">{owned ? reward.emoji : "🔒"}</span>
               <span className="mt-1 block font-extrabold text-stone-800">{reward.name}</span>
               <span className="block text-sm font-bold">
-                {owned ? reward.line : `${reward.need} 分解鎖`}
+                {owned ? reward.line : `Unlock at ${reward.need}`}
               </span>
             </li>
           );

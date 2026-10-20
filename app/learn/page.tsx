@@ -13,8 +13,8 @@ export default function LearnPage() {
   return (
     <div className="space-y-5">
       <header>
-        <p className="text-sm font-extrabold text-sky-700">聽完跟住讀</p>
-        <h1 className="text-4xl font-extrabold text-stone-900">生字同句型</h1>
+        <p className="text-sm font-extrabold text-sky-700">Listen, then say it</p>
+        <h1 className="text-4xl font-extrabold text-stone-900">Words and patterns</h1>
       </header>
       <div className="grid grid-cols-1 gap-2 sm:grid-cols-3">
         {units.map((item) => (
@@ -47,7 +47,7 @@ export default function LearnPage() {
                 <button
                   type="button"
                   className="grid size-12 place-items-center rounded-full bg-sky-100 text-sky-700"
-                  aria-label={`讀 ${word.en}`}
+                  aria-label={`Say ${word.en}`}
                   onClick={() => speak(word.say)}
                 >
                   <Volume2 />
@@ -65,7 +65,7 @@ export default function LearnPage() {
                   speak(word.en.split("").join(" "));
                 }}
               >
-                {shown ? word.en.split("").join("-").toUpperCase() : "拼出嚟"}
+                {shown ? word.en.split("").join("-").toUpperCase() : "Spell it"}
               </button>
             </article>
           );
@@ -73,7 +73,7 @@ export default function LearnPage() {
       </section>
 
       <section className="space-y-3">
-        <h2 className="text-2xl font-extrabold text-stone-900">句型</h2>
+        <h2 className="text-2xl font-extrabold text-stone-900">Patterns</h2>
         {unit.patterns.map((pattern) => (
           <article key={pattern.en} className="rounded-3xl bg-white p-4 ring-1 ring-amber-100">
             <div className="flex items-start justify-between gap-3">
@@ -87,7 +87,7 @@ export default function LearnPage() {
               <button
                 type="button"
                 className="grid size-12 shrink-0 place-items-center rounded-full bg-amber-100 text-amber-800"
-                aria-label="讀句型"
+                aria-label="Say the pattern"
                 onClick={() => speak(pattern.examples[0] ?? pattern.en)}
               >
                 <Volume2 />
@@ -105,7 +105,7 @@ export default function LearnPage() {
       </section>
 
       <section>
-        <h2 className="text-2xl font-extrabold text-stone-900">拼音</h2>
+        <h2 className="text-2xl font-extrabold text-stone-900">Letter sounds</h2>
         <div className="mt-3 grid gap-3 md:grid-cols-3">
           {unit.phonics.map((item) => (
             <button

@@ -28,64 +28,64 @@ const levels: Level[] = [
     id: "hello",
     skill: "greetings",
     emoji: "🎂",
-    title: "生日課室",
-    blurb: "蛋糕自己跳緊舞。快啲講 Good morning！",
+    title: "Birthday classroom",
+    blurb: "The cake is dancing. Say Good morning!",
     color: "bg-amber-200",
   },
   {
     id: "people",
     skill: "people",
     emoji: "🎂👩‍🏫",
-    title: "蛋糕帽老師",
-    blurb: "老師戴住生日帽。分清 He、She、We。",
+    title: "Cake-hat teacher",
+    blurb: "The teacher wears a birthday hat. Sort out He, She, and We.",
     color: "bg-sky-200",
   },
   {
     id: "bag",
     skill: "bag",
     emoji: "🎒🐱",
-    title: "書包大逃亡",
-    blurb: "擦膠同鉛筆想逃。用 have、has、a、an 捉返佢哋。",
+    title: "Bag escape",
+    blurb: "The eraser and pencil want to run. Catch them with have, has, a, and an.",
     color: "bg-emerald-200",
   },
   {
     id: "sound",
     skill: "phonics",
     emoji: "🤡",
-    title: "字母馬戲",
-    blurb: "h、m、y、b、g、t、p、k 上台表演。",
+    title: "Letter circus",
+    blurb: "h, m, y, b, g, t, p, and k go on stage.",
     color: "bg-rose-200",
   },
   {
     id: "marks",
     skill: "marks",
     emoji: "💥",
-    title: "標點打交",
-    blurb: "問號同感嘆號喺度嘈。揀啱符號先停到。",
+    title: "Punctuation fight",
+    blurb: "The question mark and the exclamation mark are shouting. Pick the right mark.",
     color: "bg-violet-200",
   },
   {
     id: "rhyme",
     rhyme: true,
     emoji: "🥁",
-    title: "踩地板童謠",
-    blurb: "One, two 開始，Nine, ten 收尾。",
+    title: "Floor rhyme",
+    blurb: "Start with One, two. Finish with Nine, ten.",
     color: "bg-orange-200",
   },
 ];
 
 const cheers = [
-  "叮！蛋糕飛出嚟！",
+  "Ding! A cake flies out!",
   "Wow! You are great!",
-  "Super Boy 飛起咗！",
-  "鉛筆拍手掌！",
+  "Super Boy takes off!",
+  "The pencil claps!",
 ];
 
 const oops = [
-  "哎呀，擦膠自己走去玩。",
-  "Oh no! 蛋糕滑走咗。",
-  "差少少，綠色先係答案。",
-  "鉛筆喺度笑你，再睇一次。",
+  "Oops. The eraser ran off to play.",
+  "Oh no! The cake slid away.",
+  "Close. The green one is the answer.",
+  "The pencil is giggling. Look again.",
 ];
 
 const SAVE = "sunny-dash-best";
@@ -208,7 +208,7 @@ export function DashGame() {
     setBest(saved);
     if (!level.rhyme && finalScore === total) grant(30);
     setClearScore(finalScore);
-    setBurst(finalScore === total ? "全對！You can fly now!" : "再玩一次，積分會再加。");
+    setBurst(finalScore === total ? "All correct! You can fly now!" : "Play again. Points still add up.");
     setMood(finalScore > 0 ? "happy" : "silly");
     if (finalScore === total) playYes();
   }
@@ -238,22 +238,22 @@ export function DashGame() {
   if (clearScore !== null) {
     const total = level.rhyme ? 5 : deck.length;
     const title =
-      clearScore === total ? "超級飛行蛋糕俠" : clearScore >= Math.ceil(total / 2) ? "擦膠小英雄" : "書包未拉鍊";
+      clearScore === total ? "Flying cake hero" : clearScore >= Math.ceil(total / 2) ? "Eraser hero" : "Bag still open";
     return (
       <section className="relative overflow-hidden rounded-[2rem] bg-gradient-to-b from-sky-200 to-amber-100 p-6 text-center">
         <Hero mood={mood} line={burst ?? "Wow!"} />
         <p className="text-6xl">{level.emoji}</p>
         <h2 className="mt-2 text-4xl font-extrabold text-amber-950">{title}</h2>
         <p className="mt-2 text-2xl font-extrabold text-stone-700">
-          {clearScore} / {total} 題答啱
+          {clearScore} / {total} correct
         </p>
-        <p className="mt-1 text-3xl font-extrabold text-amber-800">今關 +{roundPoints} 分</p>
-        <p className="text-lg font-bold text-stone-600">總積分 {points}</p>
+        <p className="mt-1 text-3xl font-extrabold text-amber-800">This level +{roundPoints}</p>
+        <p className="text-lg font-bold text-stone-600">Total points {points}</p>
         {justUnlocked.length > 0 && (
           <ul className="mx-auto mt-4 grid max-w-md gap-2">
             {justUnlocked.map((reward) => (
               <li key={reward.id} className="rounded-3xl bg-white px-4 py-3 text-xl font-extrabold text-amber-950">
-                新獎勵 {reward.emoji} {reward.name}
+                New reward {reward.emoji} {reward.name}
                 <span className="mt-1 block text-base text-stone-600">{reward.line}</span>
               </li>
             ))}
@@ -264,16 +264,16 @@ export function DashGame() {
         </div>
         <div className="mt-4 flex flex-wrap justify-center gap-2">
           <Button className="h-12 rounded-full px-6 text-base" onClick={() => openLevel(level)}>
-            再玩呢關
+            Play this level again
           </Button>
           <Button variant="outline" className="h-12 rounded-full px-6 text-base" onClick={() => setLevel(null)}>
-            返地圖
+            Back to the map
           </Button>
           <Link
             href="/report"
             className="inline-flex h-12 items-center rounded-full border border-stone-300 bg-white px-6 text-base font-extrabold"
           >
-            睇完整總結
+            Full report
           </Link>
         </div>
       </section>
@@ -287,17 +287,17 @@ export function DashGame() {
     <section className="relative overflow-hidden rounded-[2rem] bg-white p-4 shadow-sm ring-1 ring-amber-100 md:p-6">
       <div className="mb-3 flex items-center justify-between gap-2">
         <button type="button" className="text-sm font-extrabold text-amber-800" onClick={() => setLevel(null)}>
-          ← 地圖
+          ← Map
         </button>
         <p className="font-extrabold text-amber-900">
           {level.emoji} {level.title}
         </p>
         <p className="rounded-full bg-amber-100 px-3 py-1 text-sm font-extrabold">
-          {index + 1}/{deck.length} · 🪙 {points}
-          {streak > 1 ? ` · 連續 ${streak}` : ""}
+          {index + 1}/{deck.length} · {points} pts
+          {streak > 1 ? ` · streak ${streak}` : ""}
         </p>
       </div>
-      <Hero mood={mood} line={burst ?? "Help! 揀一個答案！"} />
+      <Hero mood={mood} line={burst ?? "Help! Pick an answer!"} />
       <div className="mt-4 rounded-3xl bg-amber-50 p-4">
         <div className="flex items-start justify-between gap-3">
           <h2 className="text-2xl font-extrabold leading-snug text-stone-900" lang="en">
@@ -306,7 +306,7 @@ export function DashGame() {
           <button
             type="button"
             className="grid size-12 shrink-0 place-items-center rounded-full bg-sky-200 text-sky-800"
-            aria-label="讀題目"
+            aria-label="Read the question"
             onClick={() => speak(question.speak ?? question.prompt)}
           >
             <Volume2 />
@@ -334,7 +334,7 @@ export function DashGame() {
                   correctRef.current += 1;
                   setStreak(nextStreak);
                   setMood("happy");
-                  setBurst(`${pick(cheers)} +${10 + bonus} 分`);
+                  setBurst(`${pick(cheers)} +${10 + bonus}`);
                   grant(10 + bonus);
                   playYes();
                   speak("Yes! " + choice);
@@ -363,7 +363,7 @@ export function DashGame() {
       {picked && (
         <div className="mt-4 rounded-3xl bg-amber-100 p-4">
           <p className="text-lg font-bold text-stone-800">{question.explain}</p>
-          {gained > 0 && <p className="mt-1 text-2xl font-extrabold text-emerald-700">+{gained} 分</p>}
+          {gained > 0 && <p className="mt-1 text-2xl font-extrabold text-emerald-700">+{gained} points</p>}
           <Button
             className="mt-3 h-12 rounded-full px-6 text-base"
             onClick={() => {
@@ -376,7 +376,7 @@ export function DashGame() {
               }
             }}
           >
-            {index + 1 >= deck.length ? "睇蛋糕分數" : "下一格"}
+            {index + 1 >= deck.length ? "See the cake score" : "Next square"}
           </Button>
         </div>
       )}
@@ -396,13 +396,13 @@ function Map({
   return (
     <div className="space-y-4">
       <section className="overflow-hidden rounded-[2rem] bg-gradient-to-br from-amber-300 via-rose-200 to-sky-200 p-6 text-center">
-        <Hero mood="idle" line="Help! 我張生日卡飛走咗！" />
+        <Hero mood="idle" line="Help! My birthday card flew away!" />
         <h1 className="text-4xl font-extrabold leading-tight text-amber-950 md:text-5xl">
           Super Boy
-          <span className="block">返學大冒險</span>
+          <span className="block">School Dash</span>
         </h1>
         <p className="mx-auto mt-2 max-w-xl text-lg font-bold text-amber-950/80">
-          答啱 +10 分。連續答啱再加分。全對過關再 +30。積分夠就解鎖獎勵。
+          A correct answer is +10. A streak adds more. A perfect level adds +30. Enough points unlock a reward.
         </p>
       </section>
       <RewardShelf points={points} />
@@ -420,7 +420,7 @@ function Map({
               <span className="mt-2 block text-2xl font-extrabold text-stone-900">{level.title}</span>
               <span className="mt-1 block text-base font-semibold text-stone-700">{level.blurb}</span>
               <span className="mt-2 block text-sm font-extrabold text-stone-800">
-                最好成績 {stars === 0 ? "未玩" : `${stars} 塊蛋糕`}
+                Best {stars === 0 ? "not played" : `${stars} cakes`}
               </span>
             </button>
           );
@@ -430,8 +430,8 @@ function Map({
         href="/report"
         className="block rounded-[1.6rem] bg-stone-900 px-5 py-4 text-white shadow-[5px_5px_0_#d6d3d1]"
       >
-        <span className="text-2xl font-extrabold">玩完睇總結</span>
-        <span className="mt-1 block font-semibold text-stone-200">邊類最熟，邊類最易錯，錯得最多嘅題。</span>
+        <span className="text-2xl font-extrabold">See the report after you play</span>
+        <span className="mt-1 block font-semibold text-stone-200">Which types feel familiar, which are easy to miss, and the questions missed most often.</span>
       </Link>
     </div>
   );
@@ -474,10 +474,10 @@ function RhymeStage({ onBack, onDone }: { onBack: () => void; onDone: (ok: boole
   return (
     <section className="rounded-[2rem] bg-orange-50 p-5 ring-1 ring-orange-200">
       <button type="button" className="text-sm font-extrabold text-orange-800" onClick={onBack}>
-        ← 地圖
+        ← Map
       </button>
-      <Hero mood={checked ? (correct ? "happy" : "silly") : "idle"} line="踩順序！One, two 先行。" />
-      <h2 className="text-center text-3xl font-extrabold">童謠地板</h2>
+      <Hero mood={checked ? (correct ? "happy" : "silly") : "idle"} line="Tap the order. One, two goes first." />
+      <h2 className="text-center text-3xl font-extrabold">Rhyme floor</h2>
       <ol className="mt-3 space-y-2">
         {picked.map((line, index) => (
           <li key={line} lang="en" className="rounded-full bg-white px-4 py-3 text-lg font-extrabold shadow-[3px_3px_0_#1c1917]">
@@ -521,7 +521,7 @@ function RhymeStage({ onBack, onDone }: { onBack: () => void; onDone: (ok: boole
             onDone(ok);
           }}
         >
-          踩完，檢查
+          Done. Check it
         </Button>
       </div>
     </section>

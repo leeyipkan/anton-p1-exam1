@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Button } from "@/components/ui/button";
 import type { Question } from "@/lib/content";
 import { addPoints } from "@/lib/progress";
@@ -31,11 +31,13 @@ export function Drill({
   const [picked, setPicked] = useState<string | null>(null);
   const [score, setScore] = useState(0);
   const [finished, setFinished] = useState(false);
+  const scoreRef = useRef(0);
 
   useEffect(() => {
     setDeck(shuffle(questions));
     setIndex(0);
     setPicked(null);
+    scoreRef.current = 0;
     setScore(0);
     setFinished(false);
   }, [questions]);
@@ -47,7 +49,7 @@ export function Drill({
   }, [deck, index, finished]);
 
   if (!deck) {
-    return <p className="text-lg font-bold text-amber-800">準備題目…</p>;
+    return <p className="text-lg font-bold text-amber-800">Getting the questions ready...</p>;
   }
 
   if (finished) {
@@ -60,7 +62,7 @@ export function Drill({
           {score} / {total}
         </h2>
         <p className="mt-2 text-lg text-stone-600">
-          {great ? "好叻！可以再玩一次，或者轉另一個遊戲。" : "未緊要，再聽一次答案，然後再試。"}
+          {great ? "Nice work. Play again, or try another game." : "That is fine. Listen to the answer, then try again."}
         </p>
         <Button
           className="mt-5 h-12 rounded-full px-6 text-base"
@@ -68,11 +70,12 @@ export function Drill({
             setDeck(shuffle(questions));
             setIndex(0);
             setPicked(null);
+            scoreRef.current = 0;
             setScore(0);
             setFinished(false);
           }}
         >
-          再玩一次
+          Play again
         </Button>
       </section>
     );
@@ -98,7 +101,7 @@ export function Drill({
           <button
             type="button"
             className="grid size-12 shrink-0 place-items-center rounded-full bg-sky-100 text-sky-700"
-            aria-label="讀出題目"
+            aria-label="Read the question"
             onClick={() => speak(question.speak ?? question.prompt)}
           >
             <Volume2 />
@@ -121,7 +124,8 @@ export function Drill({
                   const ok = choice === question.answer;
                   logAttempt({ id: question.id, skill: question.skill, prompt: question.prompt, ok });
                   if (ok) {
-                    setScore((value) => value + 1);
+                    scoreRef.current += 1;
+                    setScore(scoreRef.current);
                     addPoints(10);
                     speak("Yes! " + choice);
                   } else {
@@ -144,23 +148,22 @@ export function Drill({
         {picked && (
           <div className="mt-4 rounded-2xl bg-amber-50 p-4">
             <p className="text-lg font-extrabold text-amber-900">
-              {correct ? "啱！" : "睇返正確答案。"}
+              {correct ? "Yes!" : "Look at the correct answer."}
             </p>
             <p className="mt-1 text-base text-stone-700">{question.explain}</p>
             <Button
               className="mt-3 h-11 rounded-full px-5"
               onClick={() => {
                 if (index + 1 >= deck.length) {
-                  const finalScore = score;
                   setFinished(true);
-                  onDone?.(finalScore, deck.length);
+                  onDone?.(scoreRef.current, deck.length);
                 } else {
                   setIndex((value) => value + 1);
                   setPicked(null);
                 }
               }}
             >
-              {index + 1 >= deck.length ? "睇分數" : "下一題"}
+              {index + 1 >= deck.length ? "See the score" : "Next question"}
             </Button>
           </div>
         )}
