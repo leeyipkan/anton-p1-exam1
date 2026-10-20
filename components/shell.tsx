@@ -8,7 +8,7 @@ import {
   House,
   Pencil,
   Sparkles,
-  Backpack,
+  Rocket,
   CircleCheck,
 } from "lucide-react";
 import { cn } from "cn";
@@ -17,7 +17,7 @@ const links = [
   { href: "/", label: "主頁", icon: House },
   { href: "/scope", label: "範圍", icon: BookOpen },
   { href: "/learn", label: "生字", icon: Sparkles },
-  { href: "/play", label: "練習", icon: Backpack },
+  { href: "/play", label: "冒險", icon: Rocket },
   { href: "/quiz", label: "小測", icon: CircleCheck },
   { href: "/write", label: "寫作", icon: Pencil },
 ];
