@@ -9,8 +9,10 @@ import { RewardShelf } from "@/components/reward-shelf";
 import { questions, rhyme, type Question, type Skill } from "@/lib/content";
 import { addPoints, readProgress, type Reward } from "@/lib/progress";
 import { logAttempt } from "@/lib/report";
+import { isBlank, matchesBlank } from "@/lib/blank";
 import { speak } from "@/lib/speech";
 import { choiceLabel, englishAnswer, englishQuestion } from "@/lib/tell";
+import { FillBlank } from "@/components/fill-blank";
 
 type Mood = "idle" | "happy" | "silly";
 
@@ -304,12 +306,47 @@ export function DashGame() {
           {streak > 1 ? ` · streak ${streak}` : ""}
         </p>
       </div>
-      <Hero mood={mood} line={burst ?? "Help! Pick an answer!"} />
+      <Hero mood={mood} line={burst ?? (isBlank(question) ? "Help! Fill the gap!" : "Help! Pick an answer!")} />
       <div className="mt-4 rounded-3xl bg-amber-50 p-4">
         <div className="flex items-start justify-between gap-3">
-          <h2 className="text-2xl font-extrabold leading-snug text-stone-900" lang="en">
-            {question.prompt}
-          </h2>
+          {isBlank(question) ? (
+            <FillBlank
+              key={question.id}
+              question={question}
+              picked={picked}
+              onSubmit={(typed) => {
+                if (picked) return;
+                const ok = matchesBlank(question.answer, typed);
+                setPicked(ok ? question.answer : typed);
+                logAttempt({ id: question.id, skill: question.skill, prompt: question.prompt, ok });
+                if (ok) {
+                  const nextStreak = streak + 1;
+                  const bonus = nextStreak >= 3 ? 10 : nextStreak === 2 ? 5 : 0;
+                  correctRef.current += 1;
+                  setStreak(nextStreak);
+                  setMood("happy");
+                  setBurst(`${pick(cheers)} +${10 + bonus}`);
+                  grant(10 + bonus);
+                  playYes();
+                  speak("Yes! " + englishAnswer(question));
+                } else {
+                  setStreak(0);
+                  setGained(0);
+                  setMood("silly");
+                  setBurst(pick(oops));
+                  playNo();
+                  speak(englishAnswer(question));
+                }
+              }}
+            />
+          ) : (
+            <div className="min-w-0 flex-1">
+              <p className="text-sm font-extrabold tracking-wide text-amber-700">Choose one answer</p>
+              <h2 data-prompt={question.prompt} className="mt-2 text-2xl font-extrabold leading-snug text-stone-900" lang="en">
+                {question.prompt}
+              </h2>
+            </div>
+          )}
           <button
             type="button"
             className="grid size-12 shrink-0 place-items-center rounded-full bg-sky-200 text-sky-800"
@@ -324,6 +361,7 @@ export function DashGame() {
         </p>
         <p className="mt-1 text-stone-600">{question.hint}</p>
       </div>
+      {!isBlank(question) && (
       <div className="mt-3 grid gap-3">
         {question.choices.map((choice) => {
           const show = picked !== null;
@@ -371,6 +409,7 @@ export function DashGame() {
           );
         })}
       </div>
+      )}
       {picked && (
         <div className="mt-4 rounded-3xl bg-amber-100 p-4">
           <div className="flex items-start justify-between gap-3">

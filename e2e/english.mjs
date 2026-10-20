@@ -126,6 +126,9 @@ function assertContent() {
       throw new Error(`explain mismatch for ${question.id}`);
     }
     if (!question.choices.includes(question.answer)) throw new Error(`${question.id} answer is not a choice`);
+    if (question.prompt.includes("___") && question.prompt.split("___").length !== 2) {
+      throw new Error(`${question.id} should have one gap`);
+    }
     if (new Set(question.choices).size !== question.choices.length) throw new Error(`${question.id} has a repeated choice`);
     if (![1, 2, 4].includes(question.unit)) throw new Error(`${question.id} is outside Units 1, 2, and 4`);
   }
@@ -136,6 +139,8 @@ function assertContent() {
   if (JSON.stringify(rhymeLines) !== JSON.stringify(rhyme)) throw new Error("rhyme order mismatch");
   if (JSON.stringify(needs) !== JSON.stringify(rewards.map((item) => item.need))) throw new Error("reward thresholds mismatch");
   if (src.includes("id: 3")) throw new Error("Unit 3 is still in the content");
+  const blanks = questions.filter((question) => question.prompt.includes("___"));
+  if (blanks.length !== 18) throw new Error(`expected 18 fill-in questions, found ${blanks.length}`);
   return new Map(questions.map((question) => [question.prompt, question]));
 }
 
@@ -307,7 +312,41 @@ async function openLevel(name) {
 }
 
 async function promptOf() {
-  return page.$eval("h2", (el) => el.textContent.trim());
+  return page.$eval("[data-prompt]", (el) => el.getAttribute("data-prompt"));
+}
+
+function typedBlank(question, correct) {
+  if (correct) return /[A-Za-z]/.test(question.answer) ? question.answer.toLowerCase() : question.answer;
+  return question.choices.find((item) => item !== question.answer);
+}
+
+async function assertShape(question) {
+  const blank = question.prompt.includes("___");
+  const hasGap = (await page.$("input[aria-label='Missing word']")) !== null;
+  if (blank !== hasGap) throw new Error(`${question.prompt} gap ${hasGap}, expected ${blank}`);
+  if (!blank) return;
+  const leaked = await page.evaluate((choices) => {
+    const buttons = [...document.querySelectorAll("button")].map((item) => item.textContent.trim());
+    return choices.filter((choice) => buttons.some((text) => text === choice || text.startsWith(`${choice} `)));
+  }, question.choices);
+  if (leaked.length) throw new Error(`${question.prompt} still shows choices: ${leaked.join(", ")}`);
+}
+
+async function fillGap(text) {
+  await page.$eval(
+    "input[aria-label='Missing word']",
+    (el, value) => {
+      const proto = Object.getOwnPropertyDescriptor(window.HTMLInputElement.prototype, "value");
+      proto.set.call(el, value);
+      el.dispatchEvent(new Event("input", { bubbles: true }));
+    },
+    text,
+  );
+  await page.waitForFunction(() => {
+    const button = [...document.querySelectorAll("button")].find((item) => item.textContent.trim() === "Check the gap");
+    return button && !button.disabled;
+  });
+  await clickExact("Check the gap");
 }
 
 async function deckTotal() {
@@ -327,17 +366,37 @@ async function answerDash(correct) {
   const ask = await page.$eval("[data-ask]", (el) => el.textContent.trim());
   const script = spoken.get(question.id);
   if (ask !== `Say to him: ${script.ask}`) throw new Error(`say line for ${prompt}: ${ask}`);
-  await clickExact(choice);
+  await assertShape(question);
+  if (question.prompt.includes("___")) await fillGap(typedBlank(question, correct));
+  else await clickExact(choice);
   await waitText(question.explain);
-  const marked = await page.evaluate(() => {
-    const green = [...document.querySelectorAll("button")].find((item) => item.className.includes("border-emerald-500"));
-    return green ? green.textContent.trim() : "";
-  });
-  if (!matchesChoice(marked, question.answer)) throw new Error(`green answer for ${prompt} was ${marked}`);
+  if (question.prompt.includes("___")) {
+    const filled = await page.$eval("[data-filled]", (el) => el.textContent.trim());
+    if (filled !== question.answer) throw new Error(`filled answer for ${prompt} was ${filled}`);
+  } else {
+    const marked = await page.evaluate(() => {
+      const green = [...document.querySelectorAll("button")].find((item) => item.className.includes("border-emerald-500"));
+      return green ? green.textContent.trim() : "";
+    });
+    if (!matchesChoice(marked, question.answer)) throw new Error(`green answer for ${prompt} was ${marked}`);
+  }
   const told = await page.$eval("[data-tell]", (el) => el.textContent.trim());
   if (told !== `Tell him: ${script.tell}`) throw new Error(`tell line for ${prompt}: ${told}`);
   const after = await pointsOf();
-  if (!correct) {
+  if (question.prompt.includes("___")) {
+    const guard = await page.evaluate(() => {
+      const input = document.querySelector("input[aria-label='Missing word']");
+      if (!input?.disabled) return "still-open";
+      const node = [...document.querySelectorAll("button")].find((item) => item.textContent.trim() === "Check the gap");
+      if (node && !node.disabled) {
+        node.click();
+        return "not-disabled";
+      }
+      return "blocked";
+    });
+    if (guard !== "blocked") throw new Error(`a second gap answer was accepted for ${prompt}: ${guard}`);
+    if ((await pointsOf()) !== after) throw new Error(`points changed after a blocked gap on ${prompt}`);
+  } else if (!correct) {
     const guard = await page.evaluate((needle) => {
       const nodes = [...document.querySelectorAll("button")];
       const node =
@@ -397,7 +456,7 @@ async function answerLevel(level, choose) {
     const nextLabel = step === total - 1 ? "See the cake score" : "Next square";
     await clickExact(nextLabel);
     if (step < total - 1) {
-      await page.waitForFunction((prev) => document.querySelector("h2")?.textContent.trim() !== prev, {}, prompt);
+      await page.waitForFunction((prev) => document.querySelector("[data-prompt]")?.getAttribute("data-prompt") !== prev, {}, prompt);
     }
   }
   const perfect = correctCount === total;
@@ -815,18 +874,30 @@ try {
     ];
     for (const [index, round] of rounds.entries()) {
       await clickExact(index === 0 ? "Start" : "Play again");
-      await page.waitForSelector("h3");
+      await page.waitForSelector("[data-prompt]");
       let score = 0;
       for (let step = 0; step < 8; step += 1) {
-        const prompt = await page.$eval("h3", (el) => el.textContent.trim());
+        const prompt = await promptOf();
         const question = bank.get(prompt);
         if (!question) throw new Error(`quiz prompt missing from the bank: ${prompt}`);
         const ask = await page.$eval("[data-ask]", (el) => el.textContent.trim());
         const script = spoken.get(question.id);
         if (ask !== `Say to him: ${script.ask}`) throw new Error(`quiz say line for ${prompt}: ${ask}`);
+        await assertShape(question);
         if (step === 0) await page.click("button[aria-label='Read the question']");
         const right = step < round.correct;
-        if (right) {
+        if (question.prompt.includes("___")) {
+          await fillGap(typedBlank(question, right));
+          if (right) {
+            await waitText("Yes!");
+            score += 1;
+          } else {
+            await waitText("Look at the correct answer.");
+            await waitText(question.explain);
+          }
+          const filled = await page.$eval("[data-filled]", (el) => el.textContent.trim());
+          if (filled !== question.answer) throw new Error(`quiz filled answer for ${prompt} was ${filled}`);
+        } else if (right) {
           await clickExact(question.answer);
           await waitText("Yes!");
           score += 1;
@@ -845,7 +916,7 @@ try {
         if ((await pointsOf()) !== before) throw new Error("a quiz answer could be changed");
         await clickExact(step === 7 ? "See the score" : "Next question");
         if (step < 7) {
-          await page.waitForFunction((prev) => document.querySelector("h3")?.textContent.trim() !== prev, {}, prompt);
+          await page.waitForFunction((prev) => document.querySelector("[data-prompt]")?.getAttribute("data-prompt") !== prev, {}, prompt);
         }
       }
       await waitText(`This round: ${score}/8`);

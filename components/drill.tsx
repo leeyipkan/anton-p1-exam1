@@ -5,8 +5,10 @@ import { Button } from "@/components/ui/button";
 import type { Question } from "@/lib/content";
 import { addPoints } from "@/lib/progress";
 import { logAttempt } from "@/lib/report";
+import { isBlank, matchesBlank } from "@/lib/blank";
 import { speak } from "@/lib/speech";
 import { choiceLabel, englishAnswer, englishQuestion } from "@/lib/tell";
+import { FillBlank } from "@/components/fill-blank";
 import { Volume2 } from "lucide-react";
 
 function shuffle<T>(items: T[]) {
@@ -96,9 +98,34 @@ export function Drill({
       <div className="rounded-3xl bg-white p-5 shadow-sm ring-1 ring-amber-100">
         <p className="text-sm font-bold text-amber-700">Unit {question.unit}</p>
         <div className="mt-2 flex items-start justify-between gap-3">
-          <h3 className="text-2xl font-extrabold leading-snug text-stone-800" lang="en">
-            {question.prompt}
-          </h3>
+          {isBlank(question) ? (
+            <FillBlank
+              key={question.id}
+              question={question}
+              picked={picked}
+              onSubmit={(typed) => {
+                if (picked) return;
+                const ok = matchesBlank(question.answer, typed);
+                setPicked(ok ? question.answer : typed);
+                logAttempt({ id: question.id, skill: question.skill, prompt: question.prompt, ok });
+                if (ok) {
+                  scoreRef.current += 1;
+                  setScore(scoreRef.current);
+                  addPoints(10);
+                  speak("Yes! " + englishAnswer(question));
+                } else {
+                  speak(englishAnswer(question));
+                }
+              }}
+            />
+          ) : (
+            <div className="min-w-0 flex-1">
+              <p className="text-sm font-extrabold tracking-wide text-amber-700">Choose one answer</p>
+              <h3 data-prompt={question.prompt} className="mt-2 text-2xl font-extrabold leading-snug text-stone-800" lang="en">
+                {question.prompt}
+              </h3>
+            </div>
+          )}
           <button
             type="button"
             className="grid size-12 shrink-0 place-items-center rounded-full bg-sky-100 text-sky-700"
@@ -112,6 +139,7 @@ export function Drill({
           Say to him: {englishQuestion(question)}
         </p>
         <p className="mt-1 text-base text-stone-500">{question.hint}</p>
+        {!isBlank(question) && (
         <div className="mt-4 grid gap-3">
           {question.choices.map((choice) => {
             const chosen = picked === choice;
@@ -150,6 +178,7 @@ export function Drill({
             );
           })}
         </div>
+        )}
         {picked && (
           <div className="mt-4 rounded-2xl bg-amber-50 p-4">
             <p className="text-lg font-extrabold text-amber-900">

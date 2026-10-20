@@ -21,6 +21,8 @@ npm run dev
 
 Open [http://127.0.0.1:43123](http://127.0.0.1:43123).
 
+Some questions are a choice. Questions with a gap are fill-in-the-blank: type the missing word or mark, then check it. Capitals do not have to match. The right word is shown afterwards.
+
 Each question has a line to say out loud, and the answer is a full English sentence to tell him. The speaker button uses the browser voice. If there is no sound, read the Say to him and Tell him lines on the screen.
 
 ## End-to-end check

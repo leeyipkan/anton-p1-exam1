@@ -42,27 +42,27 @@ const spoken: Record<string, { ask: string; tell: string }> = {
     tell: "The correct card says, Dear Lily, Happy birthday! From Ken.",
   },
   p1: {
-    ask: "This is Wendy. Who is my classmate? She, He, or We?",
+    ask: "This is Wendy. A word is missing. This is Wendy. Something is my classmate. What do you write?",
     tell: "This is Wendy. She is my classmate.",
   },
   p2: {
-    ask: "This is Ted. Who is our group leader? He, She, or I?",
+    ask: "This is Ted. A word is missing. This is Ted. Something is our group leader. What do you write?",
     tell: "This is Ted. He is our group leader.",
   },
   p3: {
-    ask: "Kate and Wendy are together. Who is in Class 1A? We, He, or She?",
+    ask: "Kate and Wendy are together. A word is missing before are in Class 1A. What do you write?",
     tell: "Kate and Wendy are together. We are in Class 1A.",
   },
   p4: {
-    ask: "Kate talks about her own friend. Which word do you use? My, our, or we?",
+    ask: "Kate talks about her own friend. She is something best friend. What is the missing word?",
     tell: "She is my best friend.",
   },
   p5: {
-    ask: "Sue helps the teacher. Sue is a girl. What is she? A monitress, a monitor, or a Maths teacher?",
+    ask: "Sue helps the teacher. Sue is a girl. She is the something. What is the missing word?",
     tell: "She is the monitress.",
   },
   p6: {
-    ask: "The English teacher is a man. What do we call him? Mr Brown, Mrs Brown, or Miss Brown?",
+    ask: "The English teacher is a man. What do we write in the gap?",
     tell: "We call him Mr Brown.",
   },
   p7: {
@@ -74,27 +74,27 @@ const spoken: Record<string, { ask: string; tell: string }> = {
     tell: "A married woman is Mrs.",
   },
   b1: {
-    ask: "You have a pencil. Do you say I have, I has, or I am?",
+    ask: "A word is missing. I something a pencil. What do you write?",
     tell: "I have a pencil.",
   },
   b2: {
-    ask: "A girl has an eraser. Do you say She has, She have, or She is?",
+    ask: "A word is missing. She something an eraser. What do you write?",
     tell: "She has an eraser.",
   },
   b3: {
-    ask: "A boy has two water bottles. Do you say He has, He have, or He are?",
+    ask: "A word is missing. He something two water bottles. What do you write?",
     tell: "He has two water bottles.",
   },
   b4: {
-    ask: "Orange. Do you say a or an?",
+    ask: "A word is missing before orange. What do you write?",
     tell: "You say an orange.",
   },
   b5: {
-    ask: "Book. Do you say a or an?",
+    ask: "A word is missing before book. What do you write?",
     tell: "You say a book.",
   },
   b6: {
-    ask: "Umbrella. Do you say a or an?",
+    ask: "A word is missing before umbrella. What do you write?",
     tell: "You say an umbrella.",
   },
   b7: {
@@ -102,27 +102,27 @@ const spoken: Record<string, { ask: string; tell: string }> = {
     tell: "The word for 8 is eight.",
   },
   b8: {
-    ask: "There is one eraser. Now there are three. Do you say erasers, eraser, or an eraser?",
+    ask: "One eraser. Three something. What is the missing word?",
     tell: "One eraser. Three erasers.",
   },
   b9: {
-    ask: "You have one pen. Do you say a pen, an pen, or three pen?",
+    ask: "I have one pen. You can also say, I have something pen. What is the missing word?",
     tell: "I have a pen.",
   },
   m1: {
-    ask: "This asks your name. What is your name. Which mark do you use? A question mark, a full stop, or an exclamation mark?",
+    ask: "What is your name. A mark is missing at the end. What do you write?",
     tell: "What is your name? Use a question mark.",
   },
   m2: {
-    ask: "This is a shout. Help. Which mark do you use? An exclamation mark, a full stop, or a question mark?",
+    ask: "Help. A mark is missing at the end. What do you write?",
     tell: "Help! Use an exclamation mark.",
   },
   m3: {
-    ask: "This is an ordinary sentence. I am six years old. Which mark do you use? A full stop, a question mark, or an exclamation mark?",
+    ask: "I am six years old. A mark is missing at the end. What do you write?",
     tell: "I am six years old. Use a full stop.",
   },
   m4: {
-    ask: "You are speaking to Super Boy. You are great, Super Boy. Which mark goes before his name? A comma, a full stop, or a question mark?",
+    ask: "You are great, then a mark, then Super Boy. What do you write in the gap?",
     tell: "You are great, Super Boy. Use a comma.",
   },
   h1: {

@@ -21,7 +21,7 @@ const doors = [
     href: "/quiz",
     emoji: "✅",
     title: "Practice quiz",
-    text: "Eight mixed questions, like a short paper. Play the dash first.",
+    text: "Eight mixed questions. Choices and gaps to fill, like a short paper.",
     tint: "bg-rose-100",
   },
   {
@@ -54,7 +54,7 @@ export default function HomePage() {
           <span className="mt-1 block text-2xl md:text-3xl">School Dash</span>
         </h1>
         <p className="mt-3 max-w-2xl text-lg font-bold leading-relaxed text-amber-950/80">
-          Tap a level and play. A correct answer pops a cake and a sound. A wrong answer sends the eraser off to play. English from Units 1, 2, and 4.
+          Tap a level and play. Some questions are a choice. Some have a gap to fill in. A correct answer pops a cake and a sound. English from Units 1, 2, and 4.
         </p>
         <span className="mt-4 inline-flex h-12 items-center rounded-full bg-stone-900 px-6 text-lg font-extrabold text-white">
           Start playing

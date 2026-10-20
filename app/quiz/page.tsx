@@ -27,7 +27,7 @@ export default function QuizPage() {
         <p className="text-sm font-extrabold text-rose-600">8 questions · Units 1, 2, and 4 mixed</p>
         <h1 className="mt-1 text-4xl font-extrabold text-stone-900">Practice quiz</h1>
         <p className="mt-3 max-w-xl text-lg leading-relaxed text-stone-600">
-          Each correct answer adds 10 points. A perfect 8 adds 20 more and can unlock a reward. If the speaker is quiet, a parent can read the question aloud.
+          Some questions are a choice. Some have a gap to fill in. Each correct answer adds 10 points. A perfect 8 adds 20 more. If the speaker is quiet, a parent can read the question aloud.
         </p>
         <Button
           className="mt-5 h-12 rounded-full px-6 text-base"
