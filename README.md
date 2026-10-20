@@ -14,7 +14,7 @@ The main path is Super Boy School Dash: six levels, reactions, and sounds. At th
 
 ## Website
 
-The practice site is [https://leeyipkan.github.io/sunny-class/](https://leeyipkan.github.io/sunny-class/).
+The practice site is [https://leeyipkan.github.io/anton-p1-exam1/](https://leeyipkan.github.io/anton-p1-exam1/).
 
 Scores stay in the browser on that device. Nothing is sent to a server.
 

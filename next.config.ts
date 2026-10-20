@@ -1,7 +1,7 @@
 import type { NextConfig } from "next";
 
 const pages = process.env.GITHUB_PAGES === "1";
-const basePath = pages ? "/sunny-class" : "";
+const basePath = pages ? "/anton-p1-exam1" : "";
 
 const nextConfig: NextConfig = {
   devIndicators: {
