@@ -617,6 +617,27 @@ try {
       if (page.url().includes("/learn") === false) throw new Error("phonics click left the word page");
     }
     if ((await readCopy()).includes("Unit 3")) throw new Error("Unit 3 appeared on the word cards");
+    await clickIncludes("Unit 1");
+    await page.waitForFunction(() => {
+      const el = document.querySelector("img[alt='birthday']");
+      return el && el.complete && el.naturalWidth > 0;
+    });
+    await clickIncludes("Unit 4");
+    const pictures = ["school bag", "book", "lunch box", "water bottle", "pen", "pencil", "eraser", "ruler", "crayon"];
+    await page.waitForFunction(
+      (alts) =>
+        alts.every((alt) => {
+          const el = document.querySelector(`img[alt="${alt}"]`);
+          return el && el.complete && el.naturalWidth > 0;
+        }),
+      {},
+      pictures,
+    );
+    const caseCard = await page.evaluate(() => {
+      const article = [...document.querySelectorAll("article")].find((el) => el.querySelector("h2")?.textContent.trim() === "pencil case");
+      return Boolean(article?.querySelector("img"));
+    });
+    if (caseCard) throw new Error("pencil case should stay a symbol");
     assertEnglish(await readCopy(), "learn");
   });
 

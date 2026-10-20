@@ -5,6 +5,7 @@ export type Word = {
   zh: string;
   emoji: string;
   say: string;
+  picture?: string;
 };
 
 export type Pattern = {
@@ -40,7 +41,7 @@ export const units: Unit[] = [
       { en: "Hello", zh: "a friendly hello", emoji: "🙂", say: "Hello" },
       { en: "Hi", zh: "a short hello", emoji: "✋", say: "Hi" },
       { en: "name", zh: "what people call you", emoji: "🏷️", say: "name" },
-      { en: "birthday", zh: "the day you were born", emoji: "🎂", say: "birthday" },
+      { en: "birthday", zh: "the day you were born", emoji: "🎂", say: "birthday", picture: "/pixabay/birthday.png" },
     ],
     patterns: [
       {
@@ -141,16 +142,16 @@ export const units: Unit[] = [
     story:
       "Super Boy walks to school on a sunny morning. He has an eraser and a school bag. He helps a cat and a child. A grandma feels unwell. Super Boy has eight pencils and two water bottles. He gives her a bottle of water. She says Thank you. He says No problem.",
     words: [
-      { en: "school bag", zh: "a bag for school", emoji: "🎒", say: "school bag" },
-      { en: "book", zh: "something you read", emoji: "📗", say: "book" },
+      { en: "school bag", zh: "a bag for school", emoji: "🎒", say: "school bag", picture: "/pixabay/school-bag.png" },
+      { en: "book", zh: "something you read", emoji: "📗", say: "book", picture: "/pixabay/book.png" },
       { en: "pencil case", zh: "a box for pens", emoji: "🖊️", say: "pencil case" },
-      { en: "lunch box", zh: "a box for lunch", emoji: "🍱", say: "lunch box" },
-      { en: "water bottle", zh: "a bottle of water", emoji: "🥤", say: "water bottle" },
-      { en: "pen", zh: "you write with it", emoji: "✒️", say: "pen" },
-      { en: "pencil", zh: "you draw with it", emoji: "✏️", say: "pencil" },
-      { en: "eraser", zh: "it rubs out marks", emoji: "🧽", say: "eraser" },
-      { en: "ruler", zh: "it draws straight lines", emoji: "📏", say: "ruler" },
-      { en: "crayon", zh: "a coloured stick", emoji: "🖍️", say: "crayon" },
+      { en: "lunch box", zh: "a box for lunch", emoji: "🍱", say: "lunch box", picture: "/pixabay/lunch-box.png" },
+      { en: "water bottle", zh: "a bottle of water", emoji: "🥤", say: "water bottle", picture: "/pixabay/water-bottle.png" },
+      { en: "pen", zh: "you write with it", emoji: "✒️", say: "pen", picture: "/pixabay/pen.png" },
+      { en: "pencil", zh: "you draw with it", emoji: "✏️", say: "pencil", picture: "/pixabay/pencil.png" },
+      { en: "eraser", zh: "it rubs out marks", emoji: "🧽", say: "eraser", picture: "/pixabay/eraser.png" },
+      { en: "ruler", zh: "it draws straight lines", emoji: "📏", say: "ruler", picture: "/pixabay/ruler.png" },
+      { en: "crayon", zh: "a coloured stick", emoji: "🖍️", say: "crayon", picture: "/pixabay/crayon.png" },
     ],
     patterns: [
       {

@@ -41,9 +41,17 @@ export default function LearnPage() {
           return (
             <article key={word.en} className="rounded-3xl bg-white p-4 shadow-sm ring-1 ring-sky-100">
               <div className="flex items-center justify-between gap-3">
-                <span className="text-5xl" aria-hidden>
-                  {word.emoji}
-                </span>
+                {word.picture ? (
+                  <img
+                    src={word.picture}
+                    alt={word.en}
+                    className="h-36 min-w-0 max-w-full flex-1 rounded-2xl bg-amber-50 object-contain"
+                  />
+                ) : (
+                  <span className="text-5xl" aria-hidden>
+                    {word.emoji}
+                  </span>
+                )}
                 <button
                   type="button"
                   className="grid size-12 place-items-center rounded-full bg-sky-100 text-sky-700"
@@ -104,6 +112,7 @@ export default function LearnPage() {
         ))}
       </section>
 
+      <p className="text-sm font-bold text-stone-400">Pictures from Pixabay.</p>
       <section>
         <h2 className="text-2xl font-extrabold text-stone-900">Letter sounds</h2>
         <div className="mt-3 grid gap-3 md:grid-cols-3">
