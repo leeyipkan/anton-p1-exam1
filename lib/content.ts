@@ -1,4 +1,4 @@
-export type UnitId = 1 | 2 | 3 | 4;
+export type UnitId = 1 | 2 | 4;
 
 export type Word = {
   en: string;
@@ -19,7 +19,6 @@ export type Unit = {
   title: string;
   zh: string;
   story: string;
-  covered: "full" | "preview";
   words: Word[];
   patterns: Pattern[];
   phonics: { sound: string; words: string[]; zh: string }[];
@@ -31,7 +30,6 @@ export const units: Unit[] = [
     id: 1,
     title: "Getting to know you",
     zh: "認識你",
-    covered: "full",
     story:
       "開學第一日，Jack Poon、Lily Wong 同 Ken Chan 喺課室見面。Jack 七歲，今日生日。Lily 同 Ken 都係六歲。佢哋用 Good morning、Nice to meet you 打招呼，又問名同年紀。Lily 打開飯盒，拿出蛋糕，話 Happy birthday。",
     words: [
@@ -85,7 +83,6 @@ export const units: Unit[] = [
     id: 2,
     title: "People at my school",
     zh: "我學校嘅人",
-    covered: "full",
     story:
       "Kate Wood 六歲，來自美國，而家同爸爸媽媽住喺中國。Mr Brown 係英文老師，來自英國，好好人。Wendy Tam 係佢最好嘅同學，同班 Class 1A。Ted Wong 係 Group 1 組長。Sue Clark 係女班長 monitress。",
     words: [
@@ -138,43 +135,9 @@ export const units: Unit[] = [
     ],
   },
   {
-    id: 3,
-    title: "Listen to the teacher",
-    zh: "聽老師講",
-    covered: "preview",
-    story:
-      "課文頁（大約第 22–29 頁）冇影到。自評清單同章節預告寫明：學學校裡嘅物件、簡單指令，同寫一張指令清單。以下只練預告入面睇到嘅句子。",
-    words: [
-      { en: "computer", zh: "電腦", emoji: "💻", say: "computer" },
-      { en: "door", zh: "門", emoji: "🚪", say: "door" },
-      { en: "please", zh: "請", emoji: "🙏", say: "please" },
-    ],
-    patterns: [
-      {
-        title: "課堂指令",
-        en: "Come in, please.",
-        zh: "請入嚟。指令尾通常加 please。",
-        examples: [
-          "Point to the computer, please.",
-          "Open the door, please.",
-          "Come in, please.",
-        ],
-      },
-    ],
-    phonics: [
-      {
-        sound: "s / -ft / -lk",
-        words: ["書本預告有呢三組音，生字表未影到"],
-        zh: "請翻課本第 22–29 頁對生字",
-      },
-    ],
-    writing: ["小任務：喺學校搵指令，寫成一張清單。每句尾都可以加 please。"],
-  },
-  {
     id: 4,
     title: "In my school bag",
     zh: "我個書包",
-    covered: "full",
     story:
       "Super Boy 晴朗朝早返學。佢有擦膠同書包，救咗一隻貓同一個小朋友。一位婆婆唔舒服，Super Boy 有八枝鉛筆、兩枝水樽，俾咗一枝水俾婆婆。婆婆話 Thank you，佢答 No problem。",
     words: [
@@ -248,8 +211,7 @@ export type Skill =
   | "people"
   | "bag"
   | "phonics"
-  | "marks"
-  | "orders";
+  | "marks";
 
 export type Question = {
   id: string;
@@ -314,7 +276,7 @@ export const questions: Question[] = [
     prompt: "A new friend says: Nice to meet you.",
     hint: "第一次見面，你可以點答？",
     speak: "Nice to meet you.",
-    choices: ["Nice to meet you too.", "I have a pen.", "Open the door, please."],
+    choices: ["Nice to meet you too.", "I have a pen.", "I am six years old."],
     answer: "Nice to meet you too.",
     explain: "人哋話 Nice to meet you，你可以答 Nice to meet you too。",
   },
@@ -527,39 +489,6 @@ export const questions: Question[] = [
     explain: "一件普通物件：a pen / one pen。擦膠因為元音開頭：an eraser / one eraser。",
   },
   {
-    id: "o1",
-    unit: 3,
-    skill: "orders",
-    prompt: "The teacher says: Open the door, please.",
-    hint: "你要做咩？",
-    speak: "Open the door, please.",
-    choices: ["Open the door.", "Close your book.", "Sit on the bag."],
-    answer: "Open the door.",
-    explain: "聽清楚動詞：Open the door。",
-  },
-  {
-    id: "o2",
-    unit: 3,
-    skill: "orders",
-    prompt: "The teacher says: Come in, please.",
-    hint: "請你點做？",
-    speak: "Come in, please.",
-    choices: ["Walk in.", "Point to the door.", "Open the pencil case."],
-    answer: "Walk in.",
-    explain: "Come in 即係入嚟。",
-  },
-  {
-    id: "o3",
-    unit: 3,
-    skill: "orders",
-    prompt: "Point to the computer, please. What do you point to?",
-    hint: "指住邊樣？",
-    speak: "Point to the computer, please.",
-    choices: ["the computer", "the door", "the water bottle"],
-    answer: "the computer",
-    explain: "Point to 後面嗰樣就係你要指嘅物件。",
-  },
-  {
     id: "m1",
     unit: 4,
     skill: "marks",
@@ -689,7 +618,6 @@ export const games: { skill: Skill; title: string; zh: string; emoji: string }[]
   { skill: "greetings", title: "Names and greetings", zh: "名、年紀、打招呼、生日卡", emoji: "👋" },
   { skill: "people", title: "People at school", zh: "He / She / We、Mr / Mrs / Miss", emoji: "🏫" },
   { skill: "bag", title: "My school bag", zh: "have / has、a / an、數字", emoji: "🎒" },
-  { skill: "orders", title: "Listen to the teacher", zh: "Come in / Open / Point，請跟書再對生字", emoji: "👂" },
   { skill: "phonics", title: "Letter sounds", zh: "h m y、b g t、p k -en", emoji: "🔤" },
   { skill: "marks", title: "Punctuation", zh: "句號、問號、感嘆號、逗號", emoji: "✏️" },
 ];
@@ -705,8 +633,6 @@ export const checklist = [
   { id: "u2o", text: "識用 my 同 our" },
   { id: "u2m", text: "識用 Mr、Mrs、Miss" },
   { id: "u2p", text: "句頭大階、I 大階、人名大階、句尾句號" },
-  { id: "u3w", text: "Unit 3：用課本第 22–29 頁對一次「學校物件」生字（相片未影到）" },
-  { id: "u3o", text: "識聽同講 Come in, please. / Point to the computer, please. / Open the door, please." },
   { id: "u4w", text: "識書包裡十件物件，同數字 one 至 ten" },
   { id: "u4h", text: "識用 I have / He has / She has，多過一件加 s" },
   { id: "u4a", text: "識用 a 同 an" },

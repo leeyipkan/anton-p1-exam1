@@ -5,14 +5,17 @@ import { checklist, rhyme, units } from "@/lib/content";
 
 const STORAGE = "sunny-class-checklist";
 
-const tones = ["bg-amber-50", "bg-sky-50", "bg-violet-50", "bg-emerald-50"];
+const tones = ["bg-amber-50", "bg-sky-50", "bg-emerald-50"];
 
 export default function ScopePage() {
   const [done, setDone] = useState<string[]>([]);
 
   useEffect(() => {
     const raw = localStorage.getItem(STORAGE);
-    if (raw) setDone(JSON.parse(raw) as string[]);
+    if (raw) {
+      const known = new Set(checklist.map((item) => item.id));
+      setDone((JSON.parse(raw) as string[]).filter((id) => known.has(id)));
+    }
   }, []);
 
   function toggle(id: string) {
@@ -27,16 +30,9 @@ export default function ScopePage() {
         <p className="text-sm font-extrabold text-amber-700">家長摘要</p>
         <h1 className="mt-1 text-4xl font-extrabold text-stone-900">今次英文考咩</h1>
         <p className="mt-3 max-w-3xl text-lg leading-relaxed text-stone-600">
-          十六張相係小一英文課本 Unit 1 至 Unit 4。自評清單停喺 Unit 4，所以我當今次範圍係呢四課。第 42 頁開始預告 Unit 5「Who is that?」同 Unit 6「Animals we love」，如果老師話都考，要再影嗰幾頁。
+          今次考試溫 Unit 1 Getting to know you、Unit 2 People at my school、Unit 4 In my school bag。Chapter 3 已剔出範圍。第 42 頁嘅 Unit 5、Unit 6 係下一章預告。
         </p>
       </header>
-
-      <section className="rounded-3xl border border-amber-300 bg-amber-50 p-5">
-        <h2 className="text-xl font-extrabold text-amber-950">相片未影到嘅頁</h2>
-        <p className="mt-2 leading-relaxed text-amber-950/80">
-          Unit 3「Listen to the teacher」嘅課文頁，大約第 22–29 頁，冇喺相入面。預告只見到三句指令，同拼音 s、-ft、-lk。請用課本對一次生字，唔好只靠呢度。Unit 1、2、4 嘅故事、生字、句型、拼音同寫作提示，相入面有。
-        </p>
-      </section>
 
       <div className="grid gap-4">
         {units.map((unit, index) => (
@@ -47,7 +43,6 @@ export default function ScopePage() {
               </h2>
               <span className="rounded-full bg-white px-3 py-1 text-sm font-bold text-stone-600">
                 {unit.zh}
-                {unit.covered === "preview" ? " · 只得預告" : ""}
               </span>
             </div>
             <p className="mt-2 leading-relaxed text-stone-700">{unit.story}</p>
@@ -77,7 +72,7 @@ export default function ScopePage() {
       <section className="rounded-3xl bg-white p-5 shadow-sm ring-1 ring-amber-100">
         <h2 className="text-2xl font-extrabold text-stone-900">卷上通常點考</h2>
         <ul className="mt-3 grid gap-2 text-base leading-relaxed text-stone-700 md:grid-cols-2">
-          <li className="rounded-2xl bg-stone-50 p-3">聽力：圈你聽到嘅字，或者跟指令做。</li>
+          <li className="rounded-2xl bg-stone-50 p-3">聽力：圈你聽到嘅字，或者聽完揀拼音。</li>
           <li className="rounded-2xl bg-stone-50 p-3">選擇：故事之後揀最好嘅答案。</li>
           <li className="rounded-2xl bg-stone-50 p-3">填充：This is ___. He is our ___.</li>
           <li className="rounded-2xl bg-stone-50 p-3">拼音：聽字，圈 h / m / y、b / g / t、p / k / -en。</li>

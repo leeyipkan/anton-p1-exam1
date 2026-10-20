@@ -16,7 +16,7 @@ export default function LearnPage() {
         <p className="text-sm font-extrabold text-sky-700">聽完跟住讀</p>
         <h1 className="text-4xl font-extrabold text-stone-900">生字同句型</h1>
       </header>
-      <div className="grid grid-cols-2 gap-2 md:grid-cols-4">
+      <div className="grid grid-cols-1 gap-2 sm:grid-cols-3">
         {units.map((item) => (
           <button
             key={item.id}
@@ -34,12 +34,6 @@ export default function LearnPage() {
           </button>
         ))}
       </div>
-
-      {unit.covered === "preview" && (
-        <p className="rounded-2xl bg-violet-50 px-4 py-3 text-violet-950">
-          呢課課文頁未影到。下面只顯示相入面預告睇到嘅指令。生字請翻課本。
-        </p>
-      )}
 
       <section className="grid gap-3 sm:grid-cols-2">
         {unit.words.map((word) => {

@@ -11,7 +11,7 @@ const nunito = Nunito({
 
 export const metadata: Metadata = {
   title: "Sunny Class 小一英文溫習",
-  description: "根據小一英文 Unit 1 至 Unit 4 範圍整理嘅生字、句型同練習。",
+  description: "根據小一英文 Unit 1、2、4 範圍整理嘅生字、句型同練習。",
 };
 
 export default function RootLayout({

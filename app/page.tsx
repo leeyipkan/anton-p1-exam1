@@ -6,7 +6,7 @@ const doors = [
     href: "/scope",
     emoji: "📋",
     title: "考試範圍",
-    text: "家長先睇。四個單元考咩、點溫、邊幾頁相片未影到。",
+    text: "家長先睇。今次考 Unit 1、2、4 嘅生字、句型同寫作。",
     tint: "bg-amber-100",
   },
   {
@@ -20,7 +20,7 @@ const doors = [
     href: "/play",
     emoji: "🎯",
     title: "練習遊戲",
-    text: "打招呼、人物、書包、指令、拼音、標點，揀答案即時知道啱唔啱。",
+    text: "打招呼、人物、書包、拼音、標點，揀答案即時知道啱唔啱。",
     tint: "bg-emerald-100",
   },
   {
@@ -51,7 +51,7 @@ export default function HomePage() {
           <span className="mt-1 block">準備英文測驗</span>
         </h1>
         <p className="mt-3 max-w-2xl text-lg leading-relaxed text-amber-950/80">
-          根據你影低嘅課本，今次溫習範圍係 Unit 1 至 Unit 4：認識新同學、學校嘅人、聽老師指令，同書包裡嘅物件。
+          今次溫習係 Unit 1、Unit 2 同 Unit 4：認識新同學、學校嘅人，同書包裡嘅物件。
         </p>
         <StarMeter />
       </section>
