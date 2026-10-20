@@ -37,11 +37,17 @@ export default function QuizPage() {
             setStarted(true);
           }}
         >
-          Start
+          {last === null ? "Start" : "Play again"}
         </Button>
         {last !== null && (
           <div className="mt-6 space-y-3 text-left">
             <p className="text-lg font-bold text-stone-700">This round: {last}/8</p>
+            <p className="text-lg text-stone-600">
+              {last >= 6
+                ? "Nice work. Play again, or try another game."
+                : "That is fine. Listen to the answer, then try again."}
+            </p>
+            {last === 8 && <p className="text-lg font-extrabold text-amber-800">Perfect round +20 points</p>}
             <ReportCard />
           </div>
         )}

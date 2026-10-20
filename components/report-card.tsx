@@ -37,7 +37,7 @@ export function ReportCard({ focus }: { focus?: AttemptSkill }) {
         </p>
         {focusStat && focusStat.tries > 0 && (
           <p className="mt-2 rounded-2xl bg-amber-50 px-3 py-2 font-bold text-amber-950">
-            This level, {focusStat.label}: {focusStat.correct} correct out of {focusStat.tries}.
+            So far, {focusStat.label}: {focusStat.correct} correct out of {focusStat.tries}.
           </p>
         )}
       </div>

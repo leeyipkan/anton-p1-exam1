@@ -180,6 +180,13 @@ export default function WritePage() {
             );
           })}
         </div>
+        {bubblePick !== null && (
+          <p className="mt-3 font-bold text-emerald-800">
+            {bubbleChoices[bubblePick].ok
+              ? "The comma sits before the name, and the shout ends with !."
+              : "Look at the green line. Put a comma before Super Boy."}
+          </p>
+        )}
       </section>
     </div>
   );

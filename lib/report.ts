@@ -51,7 +51,15 @@ export function readAttempts(): Attempt[] {
     const raw = localStorage.getItem(KEY);
     if (!raw) return [];
     const parsed = JSON.parse(raw) as Attempt[];
-    return Array.isArray(parsed) ? parsed : [];
+    if (!Array.isArray(parsed)) return [];
+    return parsed.filter(
+      (item) =>
+        !!item &&
+        typeof item.id === "string" &&
+        typeof item.prompt === "string" &&
+        typeof item.ok === "boolean" &&
+        item.skill in skillInfo,
+    );
   } catch {
     return [];
   }

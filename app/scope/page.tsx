@@ -11,10 +11,15 @@ export default function ScopePage() {
   const [done, setDone] = useState<string[]>([]);
 
   useEffect(() => {
-    const raw = localStorage.getItem(STORAGE);
-    if (raw) {
+    try {
+      const raw = localStorage.getItem(STORAGE);
+      if (!raw) return;
+      const parsed = JSON.parse(raw) as unknown;
+      if (!Array.isArray(parsed)) return;
       const known = new Set(checklist.map((item) => item.id));
-      setDone((JSON.parse(raw) as string[]).filter((id) => known.has(id)));
+      setDone(parsed.filter((id): id is string => typeof id === "string" && known.has(id)));
+    } catch {
+      setDone([]);
     }
   }, []);
 

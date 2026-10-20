@@ -92,7 +92,13 @@ const SAVE = "sunny-dash-best";
 
 function readBest(): Record<string, number> {
   try {
-    return JSON.parse(localStorage.getItem(SAVE) || "{}") as Record<string, number>;
+    const parsed = JSON.parse(localStorage.getItem(SAVE) || "{}") as unknown;
+    if (!parsed || typeof parsed !== "object" || Array.isArray(parsed)) return {};
+    const best: Record<string, number> = {};
+    for (const [key, value] of Object.entries(parsed)) {
+      if (typeof value === "number" && Number.isFinite(value)) best[key] = value;
+    }
+    return best;
   } catch {
     return {};
   }
@@ -229,7 +235,7 @@ export function DashGame() {
             ok,
           });
           grant(ok ? 30 : 5);
-          finish(ok ? 5 : 1, 5);
+          finish(ok ? 5 : 0, 5);
         }}
       />
     );
@@ -408,6 +414,7 @@ function Map({
       <RewardShelf points={points} />
       <div className="grid gap-3 sm:grid-cols-2">
         {levels.map((level) => {
+          const played = Object.prototype.hasOwnProperty.call(best, level.id);
           const stars = best[level.id] ?? 0;
           return (
             <button
@@ -420,7 +427,7 @@ function Map({
               <span className="mt-2 block text-2xl font-extrabold text-stone-900">{level.title}</span>
               <span className="mt-1 block text-base font-semibold text-stone-700">{level.blurb}</span>
               <span className="mt-2 block text-sm font-extrabold text-stone-800">
-                Best {stars === 0 ? "not played" : `${stars} cakes`}
+                Best {played ? `${stars} cakes` : "not played"}
               </span>
             </button>
           );
