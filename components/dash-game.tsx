@@ -10,7 +10,7 @@ import { questions, rhyme, type Question, type Skill } from "@/lib/content";
 import { addPoints, readProgress, type Reward } from "@/lib/progress";
 import { logAttempt } from "@/lib/report";
 import { isBlank, matchesBlank } from "@/lib/blank";
-import { speak } from "@/lib/speech";
+import { primeSpeech, speak, speaksOnTapOnly } from "@/lib/speech";
 import { choiceLabel, englishAnswer, englishQuestion } from "@/lib/tell";
 import { FillBlank } from "@/components/fill-blank";
 
@@ -132,13 +132,15 @@ let audio: AudioContext | null = null;
 function tone(freq: number, at: number, dur: number, type: OscillatorType) {
   const Context = window.AudioContext || (window as unknown as { webkitAudioContext?: typeof AudioContext }).webkitAudioContext;
   if (!Context) return;
+  primeSpeech();
   if (!audio) audio = new Context();
+  if (audio.state === "suspended") void audio.resume();
   const osc = audio.createOscillator();
   const gain = audio.createGain();
   osc.type = type;
   osc.frequency.value = freq;
   gain.gain.setValueAtTime(0.0001, audio.currentTime + at);
-  gain.gain.exponentialRampToValueAtTime(0.06, audio.currentTime + at + 0.02);
+  gain.gain.exponentialRampToValueAtTime(0.2, audio.currentTime + at + 0.02);
   gain.gain.exponentialRampToValueAtTime(0.0001, audio.currentTime + at + dur);
   osc.connect(gain);
   gain.connect(audio.destination);
@@ -178,6 +180,7 @@ export function DashGame() {
   }, []);
 
   useEffect(() => {
+    if (speaksOnTapOnly()) return;
     if (!level || level.rhyme || clearScore !== null || !deck[index] || picked) return;
     speak(englishQuestion(deck[index]));
   }, [level, deck, index, picked, clearScore]);
@@ -196,7 +199,9 @@ export function DashGame() {
     setIndex(0);
     if (next.skill) {
       const pool = questions.filter((item) => item.skill === next.skill);
-      setDeck(shuffle(pool).slice(0, Math.min(5, pool.length)));
+      const nextDeck = shuffle(pool).slice(0, Math.min(5, pool.length));
+      setDeck(nextDeck);
+      if (speaksOnTapOnly() && nextDeck[0]) speak(englishQuestion(nextDeck[0]));
     } else {
       setDeck([]);
     }
@@ -432,10 +437,12 @@ export function DashGame() {
             onClick={() => {
               if (index + 1 >= deck.length) finish(correctRef.current, deck.length);
               else {
-                setIndex((value) => value + 1);
+                const next = index + 1;
+                setIndex(next);
                 setPicked(null);
                 setMood("idle");
                 setBurst(null);
+                if (speaksOnTapOnly()) speak(englishQuestion(deck[next]));
               }
             }}
           >

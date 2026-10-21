@@ -206,6 +206,20 @@ const browser = await puppeteer.launch({
   args: ["--no-sandbox", "--disable-dev-shm-usage", "--disable-gpu"],
 });
 const page = await browser.newPage();
+await page.evaluateOnNewDocument(() => {
+  const wrap = () => {
+    const synth = window.speechSynthesis;
+    if (!synth || synth.__spy) return;
+    const original = synth.speak.bind(synth);
+    synth.speak = (utterance) => {
+      const list = window.__speaks || (window.__speaks = []);
+      list.push({ text: utterance.text, lang: utterance.lang });
+      return original(utterance);
+    };
+    synth.__spy = true;
+  };
+  wrap();
+});
 page.setDefaultTimeout(30000);
 const pageErrors = [];
 page.on("pageerror", (error) => pageErrors.push(error.message));
@@ -454,8 +468,24 @@ async function answerLevel(level, choose) {
   for (let step = 0; step < total; step += 1) {
     const prompt = await promptOf();
     if (step === 0) {
+      await page.evaluate(() => {
+        const synth = window.speechSynthesis;
+        if (!synth || synth.__spy) return;
+        const original = synth.speak.bind(synth);
+        synth.speak = (utterance) => {
+          const list = window.__speaks || (window.__speaks = []);
+          list.push({ text: utterance.text, lang: utterance.lang });
+          return original(utterance);
+        };
+        synth.__spy = true;
+      });
+      const before = await page.evaluate(() => (window.__speaks || []).length);
       await page.click("button[aria-label='Read the question']");
       if ((await promptOf()) !== prompt) throw new Error("reading the question changed it");
+      const heard = await page.evaluate((start) => (window.__speaks || []).slice(start).at(-1), before);
+      if (!heard?.text || heard.lang !== "en-GB") {
+        throw new Error(`speaker stayed quiet for ${prompt}: ${JSON.stringify(heard)}`);
+      }
     }
     const correct = choose(prompt, step, total);
     const result = await answerDash(correct);

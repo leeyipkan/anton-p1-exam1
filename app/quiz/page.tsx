@@ -5,6 +5,8 @@ import { Drill } from "@/components/drill";
 import { ReportCard } from "@/components/report-card";
 import { Button } from "@/components/ui/button";
 import { questions } from "@/lib/content";
+import { speak, speaksOnTapOnly } from "@/lib/speech";
+import { englishQuestion } from "@/lib/tell";
 import { addPoints, writeProgress, readProgress } from "@/lib/progress";
 
 function sample() {
@@ -27,14 +29,16 @@ export default function QuizPage() {
         <p className="text-sm font-extrabold text-rose-600">8 questions · Units 1, 2, and 4 mixed</p>
         <h1 className="mt-1 text-4xl font-extrabold text-stone-900">Practice quiz</h1>
         <p className="mt-3 max-w-xl text-lg leading-relaxed text-stone-600">
-          Some questions are a choice. Some have a gap to fill in. Each correct answer adds 10 points. A perfect 8 adds 20 more. If the speaker is quiet, a parent can read the question aloud.
+          Some questions are a choice. Some have a gap to fill in. Each correct answer adds 10 points. A perfect 8 adds 20 more. Tap Start and the phone reads the question. The blue speaker reads it again.
         </p>
         <Button
           className="mt-5 h-12 rounded-full px-6 text-base"
           onClick={() => {
-            setDeck(sample());
+            const next = sample();
+            setDeck(next);
             setLast(null);
             setStarted(true);
+            if (speaksOnTapOnly() && next[0]) speak(englishQuestion(next[0]));
           }}
         >
           {last === null ? "Start" : "Play again"}

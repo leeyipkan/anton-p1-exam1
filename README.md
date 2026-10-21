@@ -37,7 +37,7 @@ Some questions are a choice. Questions with a gap are fill-in-the-blank: type th
 
 The school-bag words and the birthday card use pictures from Pixabay, saved in `public/pixabay`, under the Pixabay Content License. The moving gif files would not download, so the birthday picture is a still cake.
 
-Each question has a line to say out loud, and the answer is a full English sentence to tell him. The speaker button uses the browser voice. If there is no sound, read the Say to him and Tell him lines on the screen.
+Each question has a line to say out loud, and the answer is a full English sentence to tell him. The blue speaker uses the phone voice. On an iPhone, the voice starts when you tap a level, an answer, Next, or the speaker. The Say to him and Tell him lines stay on the screen as well.
 
 ## End-to-end check
 

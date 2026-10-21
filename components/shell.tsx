@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { readProgress } from "@/lib/progress";
+import { primeSpeech } from "@/lib/speech";
 import {
   BookOpen,
   House,
@@ -32,7 +33,12 @@ export function Shell({ children }: { children: ReactNode }) {
     const sync = () => setPoints(readProgress().points);
     sync();
     window.addEventListener("sunny-points", sync);
-    return () => window.removeEventListener("sunny-points", sync);
+    const unlock = () => primeSpeech();
+    window.addEventListener("pointerdown", unlock);
+    return () => {
+      window.removeEventListener("sunny-points", sync);
+      window.removeEventListener("pointerdown", unlock);
+    };
   }, []);
 
   return (

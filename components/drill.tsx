@@ -6,7 +6,7 @@ import type { Question } from "@/lib/content";
 import { addPoints } from "@/lib/progress";
 import { logAttempt } from "@/lib/report";
 import { isBlank, matchesBlank } from "@/lib/blank";
-import { speak } from "@/lib/speech";
+import { speak, speaksOnTapOnly } from "@/lib/speech";
 import { choiceLabel, englishAnswer, englishQuestion } from "@/lib/tell";
 import { FillBlank } from "@/components/fill-blank";
 import { Volume2 } from "lucide-react";
@@ -37,7 +37,7 @@ export function Drill({
   const scoreRef = useRef(0);
 
   useEffect(() => {
-    setDeck(shuffle(questions));
+    setDeck([...questions]);
     setIndex(0);
     setPicked(null);
     scoreRef.current = 0;
@@ -46,6 +46,7 @@ export function Drill({
   }, [questions]);
 
   useEffect(() => {
+    if (speaksOnTapOnly()) return;
     if (!deck || finished) return;
     const line = deck[index] ? englishQuestion(deck[index]) : "";
     if (line) speak(line);
@@ -70,12 +71,14 @@ export function Drill({
         <Button
           className="mt-5 h-12 rounded-full px-6 text-base"
           onClick={() => {
-            setDeck(shuffle(questions));
+            const next = shuffle(questions);
+            setDeck(next);
             setIndex(0);
             setPicked(null);
             scoreRef.current = 0;
             setScore(0);
             setFinished(false);
+            if (speaksOnTapOnly() && next[0]) speak(englishQuestion(next[0]));
           }}
         >
           Play again
@@ -205,8 +208,10 @@ export function Drill({
                   setFinished(true);
                   onDone?.(scoreRef.current, deck.length);
                 } else {
-                  setIndex((value) => value + 1);
+                  const next = index + 1;
+                  setIndex(next);
                   setPicked(null);
+                  if (speaksOnTapOnly()) speak(englishQuestion(deck[next]));
                 }
               }}
             >
