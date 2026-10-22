@@ -2,6 +2,14 @@
 <html lang="zh-Hant-HK">
 <head>
   <meta charset="utf-8">
+  <script>
+    (function () {
+      var path = location.pathname;
+      var marker = path.indexOf("/chinese");
+      var href = marker === -1 ? "./" : path.slice(0, marker) + "/chinese/";
+      document.write('<base href="' + href + '">');
+    })();
+  </script>
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="description" content="Anton 小一中文：10月23日考試，今晚三節溫習。聖公會奉基小學一年級上學期。">
   <title>聽日考試 · Anton 小一中文</title>
