@@ -59,6 +59,22 @@ export function Shell({ children }: { children: ReactNode }) {
           <p className="rounded-full bg-amber-400 px-3 py-1 text-sm font-extrabold text-amber-950">
             🪙 {points}
           </p>
+          <label className="flex flex-col text-[11px] font-bold leading-none text-amber-800">
+            Exam
+            <select
+              aria-label="Choose exam"
+              defaultValue="en"
+              className="mt-1 h-11 rounded-full border-2 border-amber-500 bg-white px-3 text-sm font-extrabold text-amber-950"
+              onChange={(event) => {
+                if (event.target.value !== "zh") return;
+                const base = process.env.NEXT_PUBLIC_BASE_PATH || "";
+                window.location.assign(`${base}/chinese/`);
+              }}
+            >
+              <option value="en">English</option>
+              <option value="zh">中文</option>
+            </select>
+          </label>
           <nav className="ml-auto hidden items-center gap-1 md:flex">
             {links.map((link) => {
               const active = pathname === link.href;
