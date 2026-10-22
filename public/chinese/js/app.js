@@ -959,9 +959,12 @@
   }
 
   function syncChrome() {
+    var onGameHome = state.view === "play" && state.play.phase === "home";
     document.body.classList.toggle("is-play", state.view === "play");
     var h1 = document.querySelector(".site-head h1");
     if (h1) h1.textContent = state.view === "play" ? "聽日小遊戲" : "聽日考試";
+    var backHome = document.getElementById("back-home");
+    if (backHome) backHome.hidden = onGameHome;
   }
 
   function advancePlay() {
@@ -1588,10 +1591,11 @@
       advancePlay();
       return;
     }
-    if (action === "play-stop" || action === "play-home") {
+    if (action === "play-stop" || action === "play-home" || action === "back-home") {
       resetPlayHome();
       keepScroll = false;
-      render();
+      if (state.view !== "play") go("play");
+      else render();
       return;
     }
     if (action === "print") window.print();

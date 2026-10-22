@@ -106,6 +106,14 @@ button.is-pick { border-width: 3px; }
   padding: 0.2rem 0.55rem;
 }
 
+button.back-home {
+  align-self: center;
+  min-height: 48px;
+  min-width: 6.5rem;
+}
+
+button.back-home[hidden] { display: none; }
+
 .timer { min-width: 10rem; }
 .timer-display {
   margin: 0;
