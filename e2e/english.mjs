@@ -248,9 +248,19 @@ async function check(name, fn) {
 
 async function readCopy() {
   return page.evaluate(() => {
+    const hidden = [];
+    document.querySelectorAll("select[aria-label='Choose exam']").forEach((el) => {
+      const label = el.closest("label") || el;
+      hidden.push([label, label.style.display]);
+      label.style.display = "none";
+    });
     const bits = [document.body.innerText, document.title];
     document.querySelectorAll("[aria-label], [placeholder], [title]").forEach((el) => {
+      if (el.getAttribute("aria-label") === "Choose exam") return;
       bits.push(el.getAttribute("aria-label") || "", el.getAttribute("placeholder") || "", el.getAttribute("title") || "");
+    });
+    hidden.forEach(([el, display]) => {
+      el.style.display = display;
     });
     return bits.join("\n");
   });
@@ -326,7 +336,7 @@ async function setField(index, value) {
 
 async function setSelect(index, value) {
   await page.evaluate((index, value) => {
-    const select = document.querySelectorAll("select")[index];
+    const select = document.querySelectorAll("select:not([aria-label='Choose exam'])")[index];
     const proto = Object.getOwnPropertyDescriptor(window.HTMLSelectElement.prototype, "value");
     proto.set.call(select, value);
     select.dispatchEvent(new Event("change", { bubbles: true }));
@@ -553,6 +563,20 @@ try {
 
   await check("content spec matches the question bank", async () => {
     if (bank.size !== 37) throw new Error("bank was not loaded");
+  });
+
+  await check("exam menu switches to Chinese and back", async () => {
+    await reset();
+    await page.select("select[aria-label='Choose exam']", "zh");
+    await page.waitForFunction(() => location.pathname.includes("/chinese"));
+    await page.waitForSelector("#exam-pick");
+    const chinese = await page.$eval("#exam-pick", (el) => el.value);
+    if (chinese !== "zh") throw new Error(`chinese menu was ${chinese}`);
+    await page.select("#exam-pick", "en");
+    await page.waitForFunction(() => !location.pathname.includes("/chinese"));
+    await page.waitForSelector("select[aria-label='Choose exam']");
+    const english = await page.$eval("select[aria-label='Choose exam']", (el) => el.value);
+    if (english !== "en") throw new Error(`english menu was ${english}`);
   });
 
   await check("every page is English on desktop and phone", async () => {

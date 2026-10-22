@@ -18,7 +18,15 @@ const nextConfig: NextConfig = {
         trailingSlash: true,
         images: { unoptimized: true },
       }
-    : {}),
+    : {
+        skipTrailingSlashRedirect: true,
+        async rewrites() {
+          return [
+            { source: "/chinese", destination: "/chinese/index.html" },
+            { source: "/chinese/", destination: "/chinese/index.html" },
+          ];
+        },
+      }),
 };
 
 export default nextConfig;

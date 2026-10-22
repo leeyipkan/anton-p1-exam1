@@ -1634,10 +1634,13 @@
     window.addEventListener("pageshow", resetExamPick);
     examPick.addEventListener("change", function () {
       if (examPick.value !== "en") return;
-      var onPages = location.pathname.indexOf("/anton-p1-exam1/chinese") !== -1;
-      window.location.href = onPages
-        ? "/anton-p1-exam1/"
-        : "https://leeyipkan.github.io/anton-p1-exam1/";
+      var path = location.pathname;
+      var marker = path.indexOf("/chinese");
+      if (marker !== -1) {
+        window.location.href = (path.slice(0, marker) || "") + "/";
+        return;
+      }
+      window.location.href = "https://leeyipkan.github.io/anton-p1-exam1/";
     });
   }
 
