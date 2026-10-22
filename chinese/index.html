@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="zh-Hant-HK">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Anton 小一中文：10月23日考試，今晚三節溫習。聖公會奉基小學一年級上學期。">
+  <title>聽日考試 · Anton 小一中文</title>
+  <link rel="stylesheet" href="css/app.css">
+</head>
+<body>
+  <header class="site-head">
+    <div class="titles">
+      <h1>聽日考試</h1>
+      <p class="sub">今晚三節就夠 · 聖公會奉基小學 · 一年級中文</p>
+    </div>
+    <label class="exam-pick">
+      <span>考試</span>
+      <select id="exam-pick" aria-label="選擇考試">
+        <option value="zh" selected>中文</option>
+        <option value="en">英文</option>
+      </select>
+    </label>
+    <div class="timer" aria-label="十五分鐘計時">
+      <p id="timer-display" class="timer-display">15:00</p>
+      <div class="timer-actions">
+        <button type="button" id="timer-toggle" data-action="timer-toggle">開始</button>
+        <button type="button" data-action="timer-reset">重置</button>
+      </div>
+      <p id="timer-msg" class="timer-msg"></p>
+    </div>
+  </header>
+  <p id="voice-note" class="voice-note"></p>
+  <div class="shell">
+    <nav class="nav" aria-label="溫習頁">
+      <button type="button" data-action="nav" data-view="play">
+        <span class="nav-short">玩</span><span class="nav-long">小遊戲</span>
+      </button>
+      <button type="button" data-action="nav" data-view="today">
+        <span class="nav-short">今晚</span><span class="nav-long">今晚</span>
+      </button>
+      <button type="button" data-action="nav" data-view="plan">
+        <span class="nav-short">加練</span><span class="nav-long">加練</span>
+      </button>
+      <button type="button" data-action="nav" data-view="words">
+        <span class="nav-short">詞語</span><span class="nav-long">詞語</span>
+      </button>
+      <button type="button" data-action="nav" data-view="practice">
+        <span class="nav-short">練習</span><span class="nav-long">練習</span>
+      </button>
+      <button type="button" data-action="nav" data-view="four">
+        <span class="nav-short">四素</span><span class="nav-long">四素句</span>
+      </button>
+      <button type="button" data-action="nav" data-view="write">
+        <span class="nav-short">寫字</span><span class="nav-long">寫字</span>
+      </button>
+    </nav>
+    <main id="app"></main>
+  </div>
+  <div id="print-plan" class="print-only"></div>
+  <script src="js/data.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
