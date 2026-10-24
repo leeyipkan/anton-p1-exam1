@@ -94,7 +94,14 @@
   function render() {
     pill.textContent = stars() + " 星";
     var navView = state.view === "play" || state.view === "skills" ? "home" : state.view;
+    var backHome = document.getElementById("back-home");
+    backHome.hidden = state.view !== "play";
+    document.documentElement.classList.toggle("playing", state.view === "play");
     document.querySelectorAll(".nav button").forEach(function (btn) {
+      if (btn.id === "back-home") {
+        btn.removeAttribute("aria-current");
+        return;
+      }
       if (btn.getAttribute("data-nav") === navView) btn.setAttribute("aria-current", "page");
       else btn.removeAttribute("aria-current");
     });
@@ -182,8 +189,7 @@
       return (
         '<section class="qcard"><p class="q-top">這一轉 ' + state.roundStars + " 星</p>" +
         '<p class="move">' + esc(MOVES[state.roundStars % MOVES.length]) + "</p>" +
-        '<div class="row"><button type="button" class="check" data-start="' + esc(state.game) + '">再玩一轉</button>' +
-        '<button type="button" class="ghost" data-nav="home">返主頁</button></div></section>'
+        '<div class="row"><button type="button" class="check" data-start="' + esc(state.game) + '">再玩一轉</button></div></section>'
       );
     }
     var q = current();
@@ -191,27 +197,31 @@
     return (
       '<section class="qcard"><div class="q-top"><span>第 ' + (state.index + 1) + " / 5 題</span>" +
       '<button type="button" class="speak" id="speak">讀出來</button></div>' +
-      "<h2>" + esc(q.prompt) + "</h2>" +
+      '<div class="question"><h2>' + esc(q.prompt) + "</h2>" +
       visualHTML(q) +
+      '</div><div class="answers">' +
       answerHTML(q) +
       feedbackHTML(q) +
-      '<button type="button" class="ghost" data-nav="home">返主頁</button></section>'
+      "</div></section>"
     );
   }
 
   function visualHTML(q) {
-    if (q.kind === "circle") {
-      var html = '<div class="dots">';
-      for (var i = 0; i < q.total; i++) {
-        html += '<button type="button" class="dot" data-dot="' + i + '" aria-pressed="' + (state.dots[i] ? "true" : "false") + '" aria-label="點 ' + (i + 1) + '"></button>';
-      }
-      return html + "</div>";
-    }
+    if (q.kind === "circle") return "";
     return q.visual || "";
+  }
+
+  function dotsHTML(q) {
+    var html = '<div class="dots">';
+    for (var i = 0; i < q.total; i++) {
+      html += '<button type="button" class="dot" data-dot="' + i + '" aria-pressed="' + (state.dots[i] ? "true" : "false") + '" aria-label="點 ' + (i + 1) + '"></button>';
+    }
+    return html + "</div>";
   }
 
   function answerHTML(q) {
     if (state.phase === "feedback") return "";
+    if (q.kind === "circle") return dotsHTML(q) + '<button type="button" class="check" id="check">檢查</button>';
     if (q.kind === "choice" || q.kind === "multi") {
       return '<div class="choices">' + q.options.map(function (opt) {
         var on = q.kind === "multi" ? !!state.many[opt.id] : state.picked === opt.id;

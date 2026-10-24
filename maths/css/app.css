@@ -45,11 +45,15 @@ h2 { margin: 0 0 8px; font-size: 1.35rem; }
   padding: 6px 12px;
   font-weight: 700;
 }
+html { scroll-padding-bottom: 120px; }
+html.playing { scroll-padding-bottom: 168px; }
 #app { padding-bottom: 108px; }
+html.playing #app { padding-bottom: 176px; }
 .nav {
   position: fixed;
   left: 0; right: 0; bottom: 0;
   display: flex;
+  flex-wrap: wrap;
   gap: 8px;
   padding: 10px 14px calc(10px + env(safe-area-inset-bottom));
   background: rgba(244, 239, 228, 0.96);
@@ -67,6 +71,9 @@ h2 { margin: 0 0 8px; font-size: 1.35rem; }
   font-weight: 700;
 }
 .nav button[aria-current="page"] { background: var(--teal); color: #fff; border-color: var(--teal); }
+#back-home { flex: 1 1 100%; color: var(--teal-dark); }
+.question h2 { margin-bottom: 12px; }
+.answers { margin-top: 28px; }
 .card, .qcard {
   background: var(--card);
   border-radius: 22px;
